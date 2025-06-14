@@ -1,0 +1,50 @@
+<section aria-labelledby="repository-count" class="container px-3 px-md-5 pt-4 pb-5 mb-5">
+    <!-- Cabeçalho com contador -->
+    <h1 id="repository-count" class="h3 fw-bold text-center text-dark mb-5 pb-2 border-bottom">
+        📂 <span class="visually-hidden">Lista de projetos:</span>
+        Exibindo 0 projetos de 0 no total
+    </h1>
+
+    <!-- Controles -->
+    <div id="controls" role="region" aria-label="Controles de filtro e ordenação" class="row g-3 mb-4 align-items-end">
+        <div class="col-12 col-md-4">
+            <label for="search" class="form-label visually-hidden">Buscar por nome do projeto</label>
+            <input type="text" id="search" class="form-control" placeholder="🔍 Buscar por nome..."
+                aria-label="Buscar por nome do projeto" />
+        </div>
+        <div class="col-12 col-md-4">
+            <label for="language-filter" class="form-label visually-hidden">Filtrar por linguagem</label>
+            <select id="language-filter" class="form-select" aria-label="Filtrar por linguagem">
+                <option value="">🌐 Todas as linguagens</option>
+                <!-- Opções dinâmicas via JS -->
+            </select>
+        </div>
+        <div class="col-12 col-md-4">
+            <button id="sort-button" type="button" class="btn btn-outline-secondary btn-hover-effect"
+                aria-label="Alternar ordenação dos projetos">
+                🗂️ Exibindo: Recentes
+            </button>
+        </div>
+    </div>
+
+    <!-- Lista de repositórios -->
+    <ul id="repository-list" class="list-group" aria-label="Lista de projetos">
+        <!-- Itens dinâmicos via JS -->
+    </ul>
+
+    <!-- Template para item de repositório -->
+    <template id="repository-template">
+        <li class="list-group-item bg-light border-0 mb-3 rounded-3 shadow-sm px-4 py-3">
+            <a class="repository-link d-block fs-5 fw-semibold text-decoration-none mb-1" href="#" target="_blank"
+                rel="noopener noreferrer">
+                Nome do projeto
+            </a>
+            <p class="repository-description mb-2 fst-italic small">Descrição do projeto</p>
+            <div class="repository-meta small d-flex flex-wrap gap-2">
+                <span
+                    class="repository-language badge px-2 py-1 d-inline-flex align-items-center justify-content-center">Linguagem</span>
+                <span class="repository-updated">| Atualizado em: Data</span>
+            </div>
+        </li>
+    </template>
+</section>
