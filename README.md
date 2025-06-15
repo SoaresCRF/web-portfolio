@@ -1,6 +1,6 @@
 # 🌐 Portfólio - Versão Web
-Este é o projeto do meu portfólio web, desenvolvido em HTML, CSS e JavaScript. O site apresenta informações gerais sobre mim, além de listar meus repositórios públicos do GitHub de forma personalizada, consumindo uma API própria criada em Node.js. Para acessar o site clique [aqui](https://soarescrf.github.io/portfolio/ "Versão web")
-> 💡 Também existe uma versão Android mobile deste portfólio: [GitHub](https://github.com/SoaresCRF/portfolio-mobile-java "Projeto no GitHub")
+Este é o projeto do meu portfólio web, desenvolvido em HTML, CSS e JavaScript. O site apresenta informações gerais sobre mim, além de listar meus repositórios públicos do GitHub de forma personalizada, consumindo uma API própria criada em Node.js. Para acessar o site clique [aqui](https://soarescrf.github.io/web-portfolio/ "Versão web")
+> 💡 Também existe uma versão Android mobile deste portfólio: [GitHub](https://github.com/SoaresCRF/java-mobile-portfolio "Projeto no GitHub")
 
 ## ✨ Funcionalidades principais
 - Listagem dinâmica dos meus repositórios públicos do GitHub.
