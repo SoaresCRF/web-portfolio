@@ -4,7 +4,7 @@ Este é o projeto do meu portfólio web, desenvolvido em HTML, CSS e JavaScript.
 
 ## ✨ Funcionalidades principais
 - Listagem dinâmica dos meus repositórios públicos do GitHub.
-- Buscagem dos repositórios por nome, tipo de tecnologia e ordenção (por data / A-Z)
+- Pesquisa dos repositórios por nome, tipo de tecnologia e ordenação (por data ↑↓ / A-Z)
 - Design simples, leve e funcional.
 - Consumo de dados via API Node.js (hospedada no Render).
 
