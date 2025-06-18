@@ -276,19 +276,33 @@ export async function loadRepositories() {
       button.textContent = label;
 
       button.addEventListener('click', () => {
-        onClick();
-        scrollToTop();
+        if (!disabled) {
+          onClick();
+          updateDisplay();
+          scrollToTop();
+        }
       });
 
       li.appendChild(button);
       return li;
     };
 
-    DOM.pagination.appendChild(createPageItem('«', currentPage === 1, () => currentPage--));
+    // Botão "Anterior"
+    DOM.pagination.appendChild(
+      createPageItem('«', currentPage === 1, () => currentPage--)
+    );
+
+    // Números de página
     for (let i = 1; i <= totalPages; i++) {
-      DOM.pagination.appendChild(createPageItem(`${i}`, false, () => currentPage = i, i === currentPage));
+      DOM.pagination.appendChild(
+        createPageItem(`${i}`, false, () => currentPage = i, i === currentPage)
+      );
     }
-    DOM.pagination.appendChild(createPageItem('»', currentPage === totalPages, () => currentPage++));
+
+    // Botão "Próximo"
+    DOM.pagination.appendChild(
+      createPageItem('»', currentPage === totalPages, () => currentPage++)
+    );
   }
 
   function scrollToTop() {
