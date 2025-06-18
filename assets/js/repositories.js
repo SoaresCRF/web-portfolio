@@ -8,17 +8,38 @@ export async function loadRepositories() {
     Go: "#00ADD8", Ruby: "#701516", Shell: "#89e051"
   };
 
+  const LANG_ICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
+
+  const LANGUAGE_ICONS = {
+    Java: `${LANG_ICON_BASE}/java/java-original.svg`,
+    Python: `${LANG_ICON_BASE}/python/python-original.svg`,
+    JavaScript: `${LANG_ICON_BASE}/javascript/javascript-original.svg`,
+    TypeScript: `${LANG_ICON_BASE}/typescript/typescript-original.svg`,
+    HTML: `${LANG_ICON_BASE}/html5/html5-original.svg`,
+    CSS: `${LANG_ICON_BASE}/css3/css3-original.svg`,
+    C: `${LANG_ICON_BASE}/c/c-original.svg`,
+    "C++": `${LANG_ICON_BASE}/cplusplus/cplusplus-original.svg`,
+    "C#": `${LANG_ICON_BASE}/csharp/csharp-original.svg`,
+    PHP: `${LANG_ICON_BASE}/php/php-original.svg`,
+    Swift: `${LANG_ICON_BASE}/swift/swift-original.svg`,
+    Kotlin: `${LANG_ICON_BASE}/kotlin/kotlin-original.svg`,
+    Go: `${LANG_ICON_BASE}/go/go-original.svg`,
+    Ruby: `${LANG_ICON_BASE}/ruby/ruby-original.svg`,
+    Shell: `${LANG_ICON_BASE}/bash/bash-original.svg`,
+  };
+
   const EXCLUDED_REPO = 'SoaresCRF';
   const SORT_LABELS = ['Exibindo: Recentes', 'Exibindo: Antigos', 'Exibindo: A–Z'];
 
   const DOM = {
     list: document.getElementById('repository-list'),
     search: document.getElementById('search'),
-    languageFilter: document.getElementById('language-filter'),
     sortButton: document.getElementById('sort-button'),
     count: document.getElementById('repository-count'),
     template: document.getElementById('repository-template'),
-    pagination: document.getElementById('pagination')
+    pagination: document.getElementById('pagination'),
+    dropdownButton: document.getElementById('dropdown-button'),
+    dropdownList: document.getElementById('dropdown-list'),
   };
 
   if (Object.values(DOM).some(el => !el)) {
@@ -30,6 +51,7 @@ export async function loadRepositories() {
   let sortMode = 0;
   let currentPage = 1;
   const itemsPerPage = 10;
+  let selectedLanguage = '';
 
   async function fetchRepositories() {
     try {
@@ -42,9 +64,71 @@ export async function loadRepositories() {
     }
   }
 
+  function populateLanguageDropdown(repositories) {
+    const languages = [...new Set(
+      repositories.filter(r => r.name !== EXCLUDED_REPO)
+        .map(r => r.language)
+        .filter(Boolean)
+    )].sort();
+
+    DOM.dropdownList.innerHTML = '';
+
+    // Opção "Todas as linguagens"
+    const allItem = document.createElement('li');
+    allItem.setAttribute('role', 'option');
+    allItem.tabIndex = 0;
+    allItem.textContent = '🌐 Todas as linguagens';
+    allItem.addEventListener('click', () => selectLanguage(''));
+    DOM.dropdownList.appendChild(allItem);
+
+    for (const lang of languages) {
+      const li = document.createElement('li');
+      li.setAttribute('role', 'option');
+      li.tabIndex = 0;
+
+      const iconUrl = LANGUAGE_ICONS[lang];
+      if (iconUrl) {
+        const img = document.createElement('img');
+        img.src = iconUrl;
+        img.alt = `${lang} icon`;
+        img.style.width = '20px';
+        img.style.height = '20px';
+        img.style.marginRight = '0.5rem';
+        li.appendChild(img);
+      }
+
+      li.appendChild(document.createTextNode(lang));
+      li.addEventListener('click', () => selectLanguage(lang));
+      DOM.dropdownList.appendChild(li);
+    }
+  }
+
+  function toggleDropdown() {
+    const expanded = DOM.dropdownButton.getAttribute('aria-expanded') === 'true';
+    DOM.dropdownButton.setAttribute('aria-expanded', String(!expanded));
+    DOM.dropdownList.hidden = expanded;
+  }
+
+  function selectLanguage(language) {
+    selectedLanguage = language;
+    if (!language) {
+      DOM.dropdownButton.textContent = '🌐 Todas as linguagens';
+    } else {
+      const iconUrl = LANGUAGE_ICONS[language];
+      if (iconUrl) {
+        DOM.dropdownButton.innerHTML = `<img src="${iconUrl}" alt="${language} icon" style="width:20px; height:20px; vertical-align:middle; margin-right:0.5rem;">${language}`;
+      } else {
+        DOM.dropdownButton.textContent = language;
+      }
+    }
+    DOM.dropdownButton.setAttribute('aria-expanded', 'false');
+    DOM.dropdownList.hidden = true;
+    currentPage = 1;
+    updateDisplay();
+  }
+
   function getFilteredRepositories() {
     const term = DOM.search.value.toLowerCase();
-    const selectedLanguage = DOM.languageFilter.value;
 
     return repositories
       .filter(repository => repository.name !== EXCLUDED_REPO)
@@ -178,30 +262,19 @@ export async function loadRepositories() {
       updateDisplay();
     });
 
-    DOM.languageFilter.addEventListener('change', () => {
-      currentPage = 1;
-      updateDisplay();
+    DOM.dropdownButton.addEventListener('click', toggleDropdown);
+
+    document.addEventListener('click', (event) => {
+      if (!DOM.dropdownButton.contains(event.target) && !DOM.dropdownList.contains(event.target)) {
+        DOM.dropdownButton.setAttribute('aria-expanded', 'false');
+        DOM.dropdownList.hidden = true;
+      }
     });
-  }
-
-  function populateLanguageOptions(repositories) {
-    const languages = [...new Set(
-      repositories.filter(r => r.name !== EXCLUDED_REPO)
-        .map(r => r.language)
-        .filter(Boolean)
-    )].sort();
-
-    for (const lang of languages) {
-      const option = document.createElement('option');
-      option.value = lang;
-      option.textContent = lang;
-      DOM.languageFilter.appendChild(option);
-    }
   }
 
   async function initialize() {
     repositories = await fetchRepositories();
-    populateLanguageOptions(repositories);
+    populateLanguageDropdown(repositories);
     updateSortButtonLabel();
     setupEventListeners();
     updateDisplay();

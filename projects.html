@@ -12,13 +12,17 @@
             <input type="text" id="search" class="form-control" placeholder="🔍 Buscar por nome..."
                 aria-label="Buscar por nome do projeto" />
         </div>
+
         <div class="col-12 col-md-4">
-            <label for="language-filter" class="form-label visually-hidden">Filtrar por linguagem</label>
-            <select id="language-filter" class="form-select" aria-label="Filtrar por linguagem">
-                <option value="">🌐 Todas as linguagens</option>
-                <!-- Opções dinâmicas via JS -->
-            </select>
+            <label for="dropdown-button" class="form-label visually-hidden">Filtrar por linguagem</label>
+            <div id="language-filter" class="dropdown">
+                <button id="dropdown-button" aria-haspopup="listbox" aria-expanded="false" class="form-select">
+                    🌐 Todas as linguagens
+                </button>
+                <ul id="dropdown-list" role="listbox" tabindex="-1" hidden class="list-group"></ul>
+            </div>
         </div>
+
         <div class="col-12 col-md-4">
             <button id="sort-button" type="button" class="btn btn-outline-secondary btn-hover-effect"
                 aria-label="Alternar ordenação dos projetos">
