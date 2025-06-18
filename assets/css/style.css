@@ -40,15 +40,12 @@ ul.list-group li::marker {
 }
 
 /*====================================
-  FORMULÁRIOS - Foco em Campos
+  Foco em Campos
 ====================================*/
 input:focus,
-select:focus,
-textarea:focus {
+#dropdown-button:focus {
     border-color: #343a40 !important;
-    /* Cinza escuro */
     box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.25) !important;
-    /* Sombra leve */
     outline: none;
 }
 
