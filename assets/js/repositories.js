@@ -194,9 +194,9 @@ export async function loadRepositories() {
 
     switch (sortMode) {
       case 0:
-        return sorted.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        return sorted.sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at));
       case 1:
-        return sorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+        return sorted.sort((a, b) => new Date(a.pushed_at) - new Date(b.pushed_at));
       case 2:
         return sorted.sort((a, b) => a.name.localeCompare(b.name));
       default:
@@ -233,12 +233,12 @@ export async function loadRepositories() {
   function fillRepositoryTemplate(clone, repository) {
     const language = repository.language || 'N/A';
     const color = LANGUAGE_COLORS[language] || '#6c757d';
-    const updatedDate = new Date(repository.updated_at).toLocaleDateString();
+    const pushedDate = new Date(repository.pushed_at).toLocaleDateString();
 
     const link = clone.querySelector('.repository-link');
     const description = clone.querySelector('.repository-description');
     const languageBadge = clone.querySelector('.repository-language');
-    const updatedText = clone.querySelector('.repository-updated');
+    const pushedText = clone.querySelector('.repository-pushed');
 
     link.textContent = repository.name;
     link.href = repository.html_url;
@@ -251,8 +251,8 @@ export async function loadRepositories() {
     languageBadge.style.backgroundColor = `${color}20`;
     languageBadge.style.color = color;
 
-    updatedText.textContent = `| Atualizado em: ${updatedDate}`;
-    updatedText.style.color = color;
+    pushedText.textContent = `| Atualizado em: ${pushedDate}`;
+    pushedText.style.color = color;
   }
 
   function updateRepositoryCount(visibleCount, totalFilteredCount) {
