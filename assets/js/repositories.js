@@ -1,8 +1,6 @@
-// Função principal exportada
 export async function loadRepositories() {
   const GITHUB_REPOSITORIES_API_URL = 'https://portfolio-repositories-backend.onrender.com/repositories';
 
-  // Cores associadas a linguagens
   const LANGUAGE_COLORS = {
     Java: "#b07219", Python: "#3572A5", JavaScript: "#f1e05a", TypeScript: "#3178c6",
     HTML: "#e34c26", CSS: "#563d7c", C: "#555555", "C++": "#f34b7d",
@@ -13,14 +11,14 @@ export async function loadRepositories() {
   const EXCLUDED_REPO = 'SoaresCRF';
   const SORT_LABELS = ['Exibindo: Recentes', 'Exibindo: Antigos', 'Exibindo: A–Z'];
 
-  // Seleção de elementos DOM
   const DOM = {
     list: document.getElementById('repository-list'),
     search: document.getElementById('search'),
     languageFilter: document.getElementById('language-filter'),
     sortButton: document.getElementById('sort-button'),
     count: document.getElementById('repository-count'),
-    template: document.getElementById('repository-template')
+    template: document.getElementById('repository-template'),
+    pagination: document.getElementById('pagination')
   };
 
   if (Object.values(DOM).some(el => !el)) {
@@ -30,8 +28,9 @@ export async function loadRepositories() {
 
   let repositories = [];
   let sortMode = 0;
+  let currentPage = 1;
+  const itemsPerPage = 10;
 
-  // Fetch de repositórios do GitHub
   async function fetchRepositories() {
     try {
       const response = await fetch(GITHUB_REPOSITORIES_API_URL);
@@ -43,7 +42,6 @@ export async function loadRepositories() {
     }
   }
 
-  // Filtra repositórios por nome e linguagem
   function getFilteredRepositories() {
     const term = DOM.search.value.toLowerCase();
     const selectedLanguage = DOM.languageFilter.value;
@@ -57,7 +55,6 @@ export async function loadRepositories() {
       });
   }
 
-  // Ordena repositórios conforme modo atual
   function sortRepositories(repositories) {
     switch (sortMode) {
       case 0: return [...repositories].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
@@ -67,16 +64,14 @@ export async function loadRepositories() {
     }
   }
 
-  // Atualiza texto do botão de ordenação
   function updateSortButtonLabel() {
     DOM.sortButton.textContent = `🗂️ ${SORT_LABELS[sortMode]}`;
   }
 
-  // Renderiza repositórios na lista
-  function renderRepositories(repositories) {
+  function renderRepositories(repositoriesToRender, totalFilteredCount) {
     DOM.list.innerHTML = '';
 
-    repositories.forEach(repository => {
+    repositoriesToRender.forEach(repository => {
       const clone = DOM.template.content.cloneNode(true);
       const language = repository.language || 'N/A';
       const color = LANGUAGE_COLORS[language] || '#6c757d';
@@ -104,30 +99,91 @@ export async function loadRepositories() {
       DOM.list.appendChild(clone);
     });
 
-    updateRepositoryCount(repositories.length);
+    updateRepositoryCount(repositoriesToRender.length, totalFilteredCount);
   }
 
-  // Atualiza contagem visível de repositórios
-  function updateRepositoryCount(visibleCount) {
+  function updateRepositoryCount(visibleCount, totalFilteredCount) {
     const totalCount = repositories.filter(repository => repository.name !== EXCLUDED_REPO).length;
-    DOM.count.textContent = `📂 Exibindo ${visibleCount} projetos de ${totalCount} no total`;
+    const start = (currentPage - 1) * itemsPerPage + 1;
+    const end = Math.min(start + visibleCount - 1, totalFilteredCount);
+
+    DOM.count.textContent = `📂 Exibindo ${start}–${end} projetos de ${totalCount} no total`;
   }
 
-  // Atualiza a exibição principal dos repositórios
+  function renderPagination(totalPages) {
+    DOM.pagination.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    const createPageItem = (label, disabled, onClick, active = false) => {
+      const li = document.createElement('li');
+      li.className = `page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`;
+      const button = document.createElement('button');
+      button.className = 'page-link';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        onClick();
+        document.querySelector('section[aria-labelledby="repository-count"]').scrollIntoView({ behavior: 'smooth' });
+      });
+      li.appendChild(button);
+      return li;
+    };
+
+    DOM.pagination.appendChild(createPageItem('«', currentPage === 1, () => {
+      if (currentPage > 1) {
+        currentPage--;
+        updateDisplay();
+      }
+    }));
+
+    for (let i = 1; i <= totalPages; i++) {
+      DOM.pagination.appendChild(createPageItem(`${i}`, false, () => {
+        currentPage = i;
+        updateDisplay();
+      }, i === currentPage));
+    }
+
+    DOM.pagination.appendChild(createPageItem('»', currentPage === totalPages, () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        updateDisplay();
+      }
+    }));
+  }
+
   function updateDisplay() {
     const filtered = getFilteredRepositories();
     const sorted = sortRepositories(filtered);
-    renderRepositories(sorted);
+
+    const totalPages = Math.ceil(sorted.length / itemsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages || 1;
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedRepositories = sorted.slice(startIndex, startIndex + itemsPerPage);
+
+    renderRepositories(paginatedRepositories, sorted.length);
+    renderPagination(totalPages);
   }
 
-  // Alterna modo de ordenação
-  function toggleSortMode() {
-    sortMode = (sortMode + 1) % SORT_LABELS.length;
-    updateSortButtonLabel();
-    updateDisplay();
+  function setupEventListeners() {
+    DOM.sortButton.addEventListener('click', () => {
+      sortMode = (sortMode + 1) % SORT_LABELS.length;
+      updateSortButtonLabel();
+      currentPage = 1;
+      updateDisplay();
+    });
+
+    DOM.search.addEventListener('input', () => {
+      currentPage = 1;
+      updateDisplay();
+    });
+
+    DOM.languageFilter.addEventListener('change', () => {
+      currentPage = 1;
+      updateDisplay();
+    });
   }
 
-  // Popula filtro de linguagens únicas
   function populateLanguageOptions(repositories) {
     const languages = [...new Set(
       repositories.filter(r => r.name !== EXCLUDED_REPO)
@@ -143,14 +199,6 @@ export async function loadRepositories() {
     }
   }
 
-  // Configura ouvintes de eventos
-  function setupEventListeners() {
-    DOM.sortButton.addEventListener('click', toggleSortMode);
-    DOM.search.addEventListener('input', updateDisplay);
-    DOM.languageFilter.addEventListener('change', updateDisplay);
-  }
-
-  // Inicialização
   async function initialize() {
     repositories = await fetchRepositories();
     populateLanguageOptions(repositories);
