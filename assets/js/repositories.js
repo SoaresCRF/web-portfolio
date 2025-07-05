@@ -239,6 +239,7 @@ export async function loadRepositories() {
     const description = clone.querySelector('.repository-description');
     const languageBadge = clone.querySelector('.repository-language');
     const pushedText = clone.querySelector('.repository-pushed');
+    const linkDownload = clone.querySelector('[data-download]');
 
     link.textContent = repository.name;
     link.href = repository.html_url;
@@ -253,6 +254,9 @@ export async function loadRepositories() {
 
     pushedText.textContent = `| Atualizado em: ${pushedDate}`;
     pushedText.style.color = color;
+
+    linkDownload.href = repository.zip_url;
+    linkDownload.style.color = color;
   }
 
   function updateRepositoryCount(visibleCount, totalFilteredCount) {
