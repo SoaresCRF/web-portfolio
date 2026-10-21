@@ -5,6 +5,7 @@ Este é o projeto do meu portfólio web, desenvolvido em HTML, CSS e JavaScript.
 ## ✨ Funcionalidades principais
 - Listagem dinâmica dos meus repositórios públicos do GitHub.
 - Pesquisa dos repositórios por nome, tipo de tecnologia e ordenação (por data ↑↓ / A-Z)
+- Links diretos para cada seção (`#sobre`, `#formacao`, `#experiencia`, `#projetos`), com suporte ao botão Voltar do navegador.
 - Design simples, leve e funcional.
 - Consumo de dados via API Node.js (hospedada no Render).
 
@@ -32,7 +33,7 @@ npm install       # instala as dependências
 npm run dev       # servidor local: http://localhost:5173/web-portfolio/
 npm run build     # gera o site em dist/
 npm run preview   # serve o build de dist/ localmente
-npm test          # testes das funções puras da seção de projetos (node:test, sem dependências)
+npm test          # testes das funções puras de projetos e das âncoras das seções (node:test, sem dependências)
 ```
 - `index.html`, `assets/css/style.css` (Tailwind) e `assets/js/` são processados pelo Vite.
 - `public/` é copiado sem alterações: as seções carregadas via `fetch` (`about.html`, `education.html`, `projects.html`), o manifest e os ícones Android.

@@ -1,3 +1,5 @@
+import { getHashForSection, getSectionFromHash } from './section-hash.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // Seletores de elementos DOM usados globalmente
   const contentContainer = document.getElementById('content');
@@ -86,34 +88,52 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /**
+   * Marca o botão e carrega o conteúdo da seção
+   * @param {string} section Nome da seção
+   * @param {{ moveFocus?: boolean }} [options]
+   */
+  const showSection = (section, options) => {
+    const button = document.querySelector(`button[data-section="${section}"]`);
+
+    if (button) {
+      highlightActiveButton(button);
+      loadSectionContent(section, options);
+    } else {
+      console.warn(`Botão da seção '${section}' não encontrado.`);
+    }
+  };
+
+  /**
    * Configura os listeners de clique nos botões do menu
+   * O clique só troca a âncora da URL; o hashchange carrega a seção, o que também cobre Voltar/Avançar
    */
   const setupMenuEventListeners = () => {
     menuButtons.forEach(button => {
       button.addEventListener('click', () => {
         const selectedSection = button.dataset.section;
-        highlightActiveButton(button);
-        loadSectionContent(selectedSection, { moveFocus: true });
+        const targetHash = getHashForSection(selectedSection);
+
+        // Mesma âncora não dispara hashchange: recarrega direto (ex.: tentar de novo após erro)
+        if (location.hash === targetHash) {
+          showSection(selectedSection, { moveFocus: true });
+        } else {
+          location.hash = targetHash;
+        }
       });
+    });
+
+    window.addEventListener('hashchange', () => {
+      showSection(getSectionFromHash(location.hash), { moveFocus: true });
     });
   };
 
   /**
    * Inicializa o carregamento da página
-   * Define o botão e a seção "About" como padrão inicial
+   * Abre a seção indicada pela âncora da URL ("Sobre Mim" quando não há âncora válida)
    */
   const initializePage = () => {
     setupMenuEventListeners();
-
-    const defaultSection = 'about';
-    const defaultButton = document.querySelector(`button[data-section="${defaultSection}"]`);
-
-    if (defaultButton) {
-      highlightActiveButton(defaultButton);
-      loadSectionContent(defaultSection);
-    } else {
-      console.warn(`Botão padrão da seção '${defaultSection}' não encontrado.`);
-    }
+    showSection(getSectionFromHash(location.hash));
   };
 
   // Start
