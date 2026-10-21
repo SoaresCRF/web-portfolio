@@ -104,6 +104,8 @@ export async function loadRepositories() {
     DOM.sortButton.addEventListener('click', handleSort);
     DOM.search.addEventListener('input', handleSearch);
     DOM.dropdownButton.addEventListener('click', toggleDropdown);
+    DOM.dropdownButton.addEventListener('keydown', handleDropdownButtonKeydown);
+    DOM.dropdownList.addEventListener('keydown', handleDropdownListKeydown);
 
     document.addEventListener('click', (event) => {
       if (!DOM.dropdownButton.contains(event.target) && !DOM.dropdownList.contains(event.target)) {
@@ -130,6 +132,63 @@ export async function loadRepositories() {
     DOM.dropdownList.hidden = expanded;
   }
 
+  function getLanguageOptions() {
+    return [...DOM.dropdownList.querySelectorAll('[role="option"]')];
+  }
+
+  // Abre a lista pelo teclado e leva o foco para a opção selecionada
+  function handleDropdownButtonKeydown(event) {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+
+    event.preventDefault();
+    DOM.dropdownButton.setAttribute('aria-expanded', 'true');
+    DOM.dropdownList.hidden = false;
+
+    const options = getLanguageOptions();
+    (options.find(option => option.getAttribute('aria-selected') === 'true') || options[0])?.focus();
+  }
+
+  // Navegação por teclado entre as opções: setas, Home/End, Enter/Espaço seleciona, Esc/Tab fecha
+  function handleDropdownListKeydown(event) {
+    const options = getLanguageOptions();
+    const index = options.indexOf(document.activeElement);
+    const focusOption = (i) => options[(i + options.length) % options.length]?.focus();
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        focusOption(index + 1);
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        focusOption(index - 1);
+        break;
+      case 'Home':
+        event.preventDefault();
+        focusOption(0);
+        break;
+      case 'End':
+        event.preventDefault();
+        focusOption(options.length - 1);
+        break;
+      case 'Enter':
+      case ' ':
+        if (index === -1) return;
+        event.preventDefault();
+        selectLanguage(options[index].dataset.language);
+        DOM.dropdownButton.focus();
+        break;
+      case 'Escape':
+        event.preventDefault();
+        closeDropdown();
+        DOM.dropdownButton.focus();
+        break;
+      case 'Tab':
+        closeDropdown();
+        break;
+    }
+  }
+
   function closeDropdown() {
     DOM.dropdownButton.setAttribute('aria-expanded', 'false');
     DOM.dropdownList.hidden = true;
@@ -152,6 +211,8 @@ export async function loadRepositories() {
     const li = document.createElement('li');
     li.setAttribute('role', 'option');
     li.className = LANGUAGE_OPTION_CLASSES;
+    li.dataset.language = language;
+    li.setAttribute('aria-selected', String(language === selectedLanguage));
     li.tabIndex = 0;
 
     if (!isAll && LANGUAGE_ICONS[language]) {
@@ -169,6 +230,9 @@ export async function loadRepositories() {
 
   function selectLanguage(language) {
     selectedLanguage = language;
+    getLanguageOptions().forEach(option => {
+      option.setAttribute('aria-selected', String(option.dataset.language === language));
+    });
     updateDropdownButtonLabel();
     closeDropdown();
     currentPage = 1;
