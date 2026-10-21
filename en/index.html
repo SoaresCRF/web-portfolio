@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Portfolio of Matheus Soares, a Systems Analysis and Development student: about me, education, experience, GitHub projects and contact." />
+    <title>Matheus Soares — Portfolio</title>
+    <meta name="author" content="Matheus Soares" />
+    <link rel="canonical" href="https://soarescrf.github.io/web-portfolio/en/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://soarescrf.github.io/web-portfolio/" />
+    <link rel="alternate" hreflang="en" href="https://soarescrf.github.io/web-portfolio/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://soarescrf.github.io/web-portfolio/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+    <meta property="og:url" content="https://soarescrf.github.io/web-portfolio/en/" />
+    <meta property="og:title" content="Matheus Soares — Portfolio" />
+    <meta property="og:description"
+        content="Portfolio of Matheus Soares, a Systems Analysis and Development student: about me, education, experience, GitHub projects and contact." />
+    <meta property="og:image" content="https://soarescrf.github.io/web-portfolio/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Matheus Soares — Developer · Portfolio" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+
+<body class="flex min-h-screen flex-col bg-linear-to-r from-[#eef2f3] to-[#8e9eab] text-ink">
+
+    <!-- Cabeçalho -->
+    <header class="py-12">
+        <div class="container">
+            <h1 class="sr-only">Matheus Soares's portfolio</h1>
+
+            <!-- Idioma: o link do outro idioma aponta para a mesma seção (atualizado em dynamic-content.js) -->
+            <p class="mb-4 text-right text-lg font-semibold">
+                <span aria-hidden="true">🌐</span>
+                <span class="sr-only">Language:</span>
+                <a href="../" hreflang="pt-BR" lang="pt-BR" data-language-switch class="text-link"
+                    aria-label="Versão em português">PT</a>
+                <span aria-hidden="true">|</span>
+                <span aria-current="true">EN</span>
+            </p>
+
+            <nav class="mb-6" aria-label="Main navigation">
+                <div class="flex flex-col flex-wrap justify-center gap-2 md:flex-row md:gap-6">
+                    <button type="button" class="btn btn-hover-effect rounded-lg px-4 py-2 text-xl/normal font-bold"
+                        data-section="about" aria-controls="content" aria-label="Go to the About Me section">
+                        About Me
+                    </button>
+                    <button type="button" class="btn btn-hover-effect rounded-lg px-4 py-2 text-xl/normal font-bold"
+                        data-section="education" aria-controls="content" aria-label="Go to the Education section">
+                        Education
+                    </button>
+                    <button type="button" class="btn btn-hover-effect rounded-lg px-4 py-2 text-xl/normal font-bold"
+                        data-section="experience" aria-controls="content" aria-label="Go to the Experience section">
+                        Experience
+                    </button>
+                    <button type="button" class="btn btn-hover-effect rounded-lg px-4 py-2 text-xl/normal font-bold"
+                        data-section="projects" aria-controls="content" aria-label="Go to the Projects section">
+                        Projects
+                    </button>
+                </div>
+            </nav>
+
+            <div class="text-center text-lead" role="region" aria-label="Download and GitHub links for the project">
+                <p class="mb-2 text-center">Download the Android mobile version or check out the project on GitHub:</p>
+                <div class="inline-flex flex-wrap justify-center gap-2">
+                    <a href="https://github.com/SoaresCRF/kotlin-mobile-portfolio/releases/download/v1.3.0/soares-v1.3.0.apk"
+                        class="font-semibold text-link" rel="noopener noreferrer">
+                        📥 Download
+                    </a>
+                    <span aria-hidden="true">|</span>
+                    <a href="https://github.com/SoaresCRF/kotlin-mobile-portfolio"
+                        class="font-semibold text-link" target="_blank" rel="noopener noreferrer">
+                        💻 GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main id="main" tabindex="-1" class="my-6 grow">
+        <div class="container rounded-2xl bg-white p-6 shadow-panel md:p-12">
+            <section id="content" class="animate-fade-in">
+                <!-- Altura de tela enquanto carrega: o rodapé não aparece para depois ser empurrado (CLS) -->
+                <p class="min-h-screen">Loading content...</p>
+            </section>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="mt-auto py-12">
+        <div class="container text-center">
+            <h2 id="contato-heading" class="mb-6 text-h3 font-bold">
+                👾 Liked it? Send me a "ping"! 😉
+            </h2>
+
+            <div id="social-network-contacts" class="mt-8 mb-6 flex flex-wrap justify-center gap-6 text-center"
+                role="group" aria-label="Social networks">
+                <a href="https://github.com/SoaresCRF" target="_blank" title="GitHub" aria-label="GitHub"
+                    class="group">
+                    <img src="../assets/img/github.png" class="mx-2.5 w-8 grayscale transition-[transform,filter] duration-300 ease-[ease] group-hover:scale-110 group-hover:grayscale-0" alt="GitHub" width="32"
+                        height="32" loading="lazy" />
+                </a>
+
+                <a href="https://www.linkedin.com/in/matheus-soares-0569b8251/" target="_blank" title="LinkedIn"
+                    aria-label="LinkedIn" class="group">
+                    <img src="../assets/img/linkedin.png" class="mx-2.5 w-8 grayscale transition-[transform,filter] duration-300 ease-[ease] group-hover:scale-110 group-hover:grayscale-0" alt="LinkedIn" width="32"
+                        height="32" loading="lazy" />
+                </a>
+
+                <a href="https://www.instagram.com/soarescrf_/" target="_blank" title="Instagram" aria-label="Instagram"
+                    class="group">
+                    <img src="../assets/img/instagram.png" class="mx-2.5 w-8 grayscale transition-[transform,filter] duration-300 ease-[ease] group-hover:scale-110 group-hover:grayscale-0" alt="Instagram" width="32"
+                        height="32" loading="lazy" />
+                </a>
+
+                <a href="mailto:matheussoarescrf10@gmail.com" title="E-mail" aria-label="E-mail"
+                    class="group">
+                    <img src="../assets/img/email.png" class="mx-2.5 w-8 grayscale transition-[transform,filter] duration-300 ease-[ease] group-hover:scale-110 group-hover:grayscale-0" alt="E-mail" width="32"
+                        height="32" loading="lazy" />
+                </a>
+            </div>
+
+            <div>
+                <p class="mb-1 text-center italic">A young developer. 🚀</p>
+                <!-- Ano final atualizado em dynamic-content.js; o valor fixo é só o fallback sem JS -->
+                <p class="text-center">
+                    <span class="whitespace-nowrap">&copy; 2025–<span id="current-year">2026</span> Matheus Soares</span>
+                    <span aria-hidden="true">·</span> <span class="whitespace-nowrap">Built with Vite and Tailwind</span>
+                    <span aria-hidden="true">·</span>
+                    <a href="https://github.com/SoaresCRF/web-portfolio" class="font-semibold text-link"
+                        target="_blank" rel="noopener noreferrer">Source code</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../assets/js/dynamic-content.js"></script>
+</body>
+
+</html>

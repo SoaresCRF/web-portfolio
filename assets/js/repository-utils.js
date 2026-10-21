@@ -1,4 +1,5 @@
 // Funções puras da seção de projetos, separadas para poderem ser testadas sem DOM (ver tests/)
+import { DEFAULT_LANGUAGE, getMessages } from './messages.js';
 
 const GITHUB_ORIGIN = 'https://github.com';
 
@@ -52,26 +53,30 @@ export function normalizeRepositories(data) {
 }
 
 /**
- * Data no formato do site (pt-BR), no fuso do visitante, independente do idioma do navegador
+ * Data no formato do idioma da página, no fuso do visitante, independente do idioma do navegador
  * @param {string} isoDate
+ * @param {string} [language] Valor de <html lang>
  * @returns {string}
  */
-export function formatDate(isoDate) {
+export function formatDate(isoDate, language = DEFAULT_LANGUAGE) {
+  const messages = getMessages(language);
   const date = new Date(isoDate);
-  return Number.isNaN(date.getTime()) ? 'data desconhecida' : date.toLocaleDateString('pt-BR');
+  return Number.isNaN(date.getTime()) ? messages.unknownDate : date.toLocaleDateString(messages.dateLocale);
 }
 
 /**
  * Texto do contador de projetos
  * @param {{page: number, perPage: number, visibleCount: number, filteredCount: number, totalCount: number}} counts
+ * @param {string} [language] Valor de <html lang>
  * @returns {string}
  */
-export function getCountLabel({ page, perPage, visibleCount, filteredCount, totalCount }) {
+export function getCountLabel({ page, perPage, visibleCount, filteredCount, totalCount }, language = DEFAULT_LANGUAGE) {
+  const messages = getMessages(language);
   if (filteredCount === 0) {
-    return `📂 Nenhum projeto encontrado de ${totalCount} no total`;
+    return messages.countEmpty(totalCount);
   }
 
   const start = (page - 1) * perPage + 1;
   const end = Math.min(start + visibleCount - 1, filteredCount);
-  return `📂 Exibindo ${start}–${end} projetos de ${totalCount} no total`;
+  return messages.countRange(start, end, totalCount);
 }

@@ -6,6 +6,7 @@ Este é o projeto do meu portfólio web, desenvolvido em HTML, CSS e JavaScript.
 - Listagem dinâmica dos meus repositórios públicos do GitHub.
 - Pesquisa dos repositórios por nome, tipo de tecnologia e ordenação (por data ↑↓ / A-Z)
 - Links diretos para cada seção (`#sobre`, `#formacao`, `#experiencia`, `#projetos`), com suporte ao botão Voltar do navegador.
+- Versão em inglês em [`/en/`](https://soarescrf.github.io/web-portfolio/en/ "English version") (`#about`, `#education`, `#experience`, `#projects`); o seletor PT | EN mantém a seção aberta.
 - Design simples, leve e funcional.
 - Lista de repositórios atualizada diariamente no build, sem servidor intermediário: carrega na hora.
 
@@ -37,6 +38,7 @@ npm run preview   # serve o build de dist/ localmente
 npm test          # testes das funções puras de projetos e das âncoras das seções (node:test, sem dependências)
 ```
 - `index.html`, `assets/css/style.css` (Tailwind) e `assets/js/` são processados pelo Vite.
+- Idiomas: `index.html` + `public/*.html` (português) e `en/index.html` + `public/en/*.html` (inglês); os textos gerados pelo JavaScript ficam em `assets/js/messages.js`. **Ao mudar um texto, atualize as duas versões.**
 - `public/` é copiado sem alterações: as seções carregadas via `fetch` (`about.html`, `education.html`, `projects.html`), o `repositories.json` gerado, o manifest e os ícones Android.
 
 ## 🚀 Deploy

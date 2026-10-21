@@ -5,9 +5,13 @@ import {
   getCountLabel,
   normalizeRepositories,
 } from './repository-utils.js';
+import { getMessages } from './messages.js';
 
-// Gerado a cada build a partir da API do GitHub (scripts/fetch-repositories.js) e servido junto com o site
-const REPOSITORIES_URL = 'repositories.json';
+// Gerado a cada build a partir da API do GitHub (scripts/fetch-repositories.js) e servido na raiz do site,
+// também para a versão em inglês (en/)
+const REPOSITORIES_URL = `${import.meta.env.BASE_URL}repositories.json`;
+const PAGE_LANGUAGE = document.documentElement.lang;
+const MESSAGES = getMessages(PAGE_LANGUAGE);
 const GITHUB_PROFILE_URL = 'https://github.com/SoaresCRF';
 const DEVICON_BASE_URL = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.17.0/icons';
 
@@ -35,7 +39,7 @@ export async function loadRepositories() {
   // =================== CONFIGURAÇÕES ===================
   const EXCLUDED_REPO = 'SoaresCRF';
   const ITEMS_PER_PAGE = 10;
-  const SORT_LABELS = ['Exibindo: Recentes', 'Exibindo: Antigos', 'Exibindo: A–Z'];
+  const SORT_LABELS = MESSAGES.sortLabels;
 
   // Classes Tailwind dos elementos criados dinamicamente (literais completos para o scanner do Tailwind)
   const LANGUAGE_ICON_CLASSES = 'mr-2 size-5';
@@ -106,10 +110,10 @@ export async function loadRepositories() {
     profileLink.target = '_blank';
     profileLink.rel = 'noopener noreferrer';
     profileLink.className = 'font-semibold text-link underline';
-    profileLink.textContent = 'Ver os projetos no GitHub';
+    profileLink.textContent = MESSAGES.viewOnGitHub;
 
-    DOM.count.textContent = '📂 Projetos indisponíveis no momento';
-    showStatus('Não foi possível carregar a lista de projetos. Tente novamente em instantes.', profileLink);
+    DOM.count.textContent = MESSAGES.loadErrorTitle;
+    showStatus(MESSAGES.loadError, profileLink);
   }
 
   function getDOMElements() {
@@ -251,7 +255,7 @@ export async function loadRepositories() {
     )].sort();
 
     DOM.dropdownList.innerHTML = '';
-    addLanguageOption('🌐 Todas as linguagens', '', true);
+    addLanguageOption(MESSAGES.allLanguages, '', true);
 
     languages.forEach(lang => addLanguageOption(lang, lang, false));
   }
@@ -291,7 +295,7 @@ export async function loadRepositories() {
 
   function updateDropdownButtonLabel() {
     if (!selectedLanguage) {
-      DOM.dropdownButton.textContent = '🌐 Todas as linguagens';
+      DOM.dropdownButton.textContent = MESSAGES.allLanguages;
       return;
     }
 
@@ -310,7 +314,7 @@ export async function loadRepositories() {
   function updateSortButtonLabel() {
     DOM.sortButton.textContent = `🗂️ ${SORT_LABELS[sortMode]}`;
     // O nome acessível inclui o texto visível (WCAG 2.5.3) e explica que o botão alterna a ordem
-    DOM.sortButton.setAttribute('aria-label', `${SORT_LABELS[sortMode]}. Alternar ordenação dos projetos`);
+    DOM.sortButton.setAttribute('aria-label', `${SORT_LABELS[sortMode]}. ${MESSAGES.sortAction}`);
   }
 
   function getFilteredRepositories() {
@@ -366,7 +370,7 @@ export async function loadRepositories() {
     updateRepositoryCount(repositoriesToRender.length, totalFilteredCount);
 
     if (totalFilteredCount === 0) {
-      showStatus('Nenhum projeto corresponde à busca ou ao filtro selecionado.');
+      showStatus(MESSAGES.noMatch);
     } else {
       clearStatus();
     }
@@ -375,7 +379,7 @@ export async function loadRepositories() {
   function fillRepositoryTemplate(clone, repository) {
     const language = repository.language || 'N/A';
     const color = LANGUAGE_COLORS[language] || DEFAULT_LANGUAGE_COLOR;
-    const pushedDate = formatDate(repository.pushed_at);
+    const pushedDate = formatDate(repository.pushed_at, PAGE_LANGUAGE);
 
     const link = clone.querySelector('.repository-link');
     const description = clone.querySelector('.repository-description');
@@ -388,19 +392,19 @@ export async function loadRepositories() {
     else link.removeAttribute('href');
     link.style.color = color;
 
-    description.textContent = repository.description || 'Sem descrição disponível';
+    description.textContent = repository.description || MESSAGES.noDescription;
     description.style.color = color;
 
     languageBadge.textContent = language;
     languageBadge.style.backgroundColor = `${color}20`;
     languageBadge.style.color = color;
 
-    pushedText.textContent = `| Atualizado em: ${pushedDate}`;
+    pushedText.textContent = MESSAGES.updatedAt(pushedDate);
     pushedText.style.color = color;
 
     if (repository.zip_url) linkDownload.href = repository.zip_url;
     else linkDownload.hidden = true;
-    linkDownload.setAttribute('aria-label', `Baixar código fonte de ${repository.name}`);
+    linkDownload.setAttribute('aria-label', MESSAGES.downloadSource(repository.name));
     linkDownload.style.color = color;
   }
 
@@ -411,7 +415,7 @@ export async function loadRepositories() {
       visibleCount,
       filteredCount: totalFilteredCount,
       totalCount: repositories.filter(r => r.name !== EXCLUDED_REPO).length,
-    });
+    }, PAGE_LANGUAGE);
   }
 
   function renderPagination(totalPages) {
@@ -443,19 +447,19 @@ export async function loadRepositories() {
 
     // Botão "Anterior"
     DOM.pagination.appendChild(
-      createPageItem('«', 'Página anterior', currentPage === 1, () => currentPage--)
+      createPageItem('«', MESSAGES.previousPage, currentPage === 1, () => currentPage--)
     );
 
     // Números de página
     for (let i = 1; i <= totalPages; i++) {
       DOM.pagination.appendChild(
-        createPageItem(`${i}`, `Página ${i}`, false, () => currentPage = i, i === currentPage)
+        createPageItem(`${i}`, MESSAGES.page(i), false, () => currentPage = i, i === currentPage)
       );
     }
 
     // Botão "Próximo"
     DOM.pagination.appendChild(
-      createPageItem('»', 'Próxima página', currentPage === totalPages, () => currentPage++)
+      createPageItem('»', MESSAGES.nextPage, currentPage === totalPages, () => currentPage++)
     );
   }
 

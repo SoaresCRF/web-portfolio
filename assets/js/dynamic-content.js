@@ -1,9 +1,15 @@
 import { getHashForSection, getSectionFromHash } from './section-hash.js';
+import { getMessages } from './messages.js';
+
+const PAGE_LANGUAGE = document.documentElement.lang;
 
 document.addEventListener('DOMContentLoaded', () => {
   // Seletores de elementos DOM usados globalmente
   const contentContainer = document.getElementById('content');
   const menuButtons = document.querySelectorAll('button[data-section]');
+  // Link para a versão no outro idioma; a âncora é atualizada para abrir na mesma seção
+  const languageSwitch = document.querySelector('a[data-language-switch]');
+  const languageSwitchBase = languageSwitch?.getAttribute('href');
   // Identifica a navegação mais recente; respostas de cliques anteriores são descartadas
   let latestSectionRequest = 0;
 
@@ -11,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Exibe uma mensagem de erro no conteúdo da página
    */
   const renderErrorMessage = () => {
-    contentContainer.innerHTML = '<p role="alert">Erro ao carregar o conteúdo.</p>';
+    contentContainer.innerHTML = `<p role="alert">${getMessages(PAGE_LANGUAGE).contentError}</p>`;
   };
 
   /**
@@ -88,6 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /**
+   * Aponta o link do outro idioma para a mesma seção (ex.: #projetos → en/#projects)
+   * @param {string} section Nome da seção
+   */
+  const updateLanguageSwitch = (section) => {
+    if (!languageSwitch) return;
+    languageSwitch.href = languageSwitchBase + getHashForSection(section, languageSwitch.hreflang);
+  };
+
+  /**
    * Marca o botão e carrega o conteúdo da seção
    * @param {string} section Nome da seção
    * @param {{ moveFocus?: boolean }} [options]
@@ -97,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (button) {
       highlightActiveButton(button);
+      updateLanguageSwitch(section);
       loadSectionContent(section, options);
     } else {
       console.warn(`Botão da seção '${section}' não encontrado.`);
@@ -111,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuButtons.forEach(button => {
       button.addEventListener('click', () => {
         const selectedSection = button.dataset.section;
-        const targetHash = getHashForSection(selectedSection);
+        const targetHash = getHashForSection(selectedSection, PAGE_LANGUAGE);
 
         // Mesma âncora não dispara hashchange: recarrega direto (ex.: tentar de novo após erro)
         if (location.hash === targetHash) {
@@ -123,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('hashchange', () => {
-      showSection(getSectionFromHash(location.hash), { moveFocus: true });
+      showSection(getSectionFromHash(location.hash, PAGE_LANGUAGE), { moveFocus: true });
     });
   };
 
@@ -134,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initializePage = () => {
     document.getElementById('current-year').textContent = new Date().getFullYear();
     setupMenuEventListeners();
-    showSection(getSectionFromHash(location.hash));
+    showSection(getSectionFromHash(location.hash, PAGE_LANGUAGE));
   };
 
   // Start

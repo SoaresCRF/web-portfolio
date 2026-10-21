@@ -1,0 +1,54 @@
+// Textos gerados pelo JavaScript, por idioma da página (<html lang>); o HTML de cada idioma fica em
+// index.html + public/*.html (pt-BR) e en/index.html + public/en/*.html (en)
+
+export const DEFAULT_LANGUAGE = 'pt-BR';
+
+export const MESSAGES = {
+  'pt-BR': {
+    dateLocale: 'pt-BR',
+    contentError: 'Erro ao carregar o conteúdo.',
+    sortLabels: ['Exibindo: Recentes', 'Exibindo: Antigos', 'Exibindo: A–Z'],
+    sortAction: 'Alternar ordenação dos projetos',
+    allLanguages: '🌐 Todas as linguagens',
+    loadErrorTitle: '📂 Projetos indisponíveis no momento',
+    loadError: 'Não foi possível carregar a lista de projetos. Tente novamente em instantes.',
+    viewOnGitHub: 'Ver os projetos no GitHub',
+    noMatch: 'Nenhum projeto corresponde à busca ou ao filtro selecionado.',
+    noDescription: 'Sem descrição disponível',
+    updatedAt: date => `| Atualizado em: ${date}`,
+    unknownDate: 'data desconhecida',
+    downloadSource: name => `Baixar código fonte de ${name}`,
+    previousPage: 'Página anterior',
+    nextPage: 'Próxima página',
+    page: number => `Página ${number}`,
+    countEmpty: total => `📂 Nenhum projeto encontrado de ${total} no total`,
+    countRange: (start, end, total) => `📂 Exibindo ${start}–${end} projetos de ${total} no total`,
+  },
+  en: {
+    dateLocale: 'en-US',
+    contentError: 'Could not load the content.',
+    sortLabels: ['Showing: Newest', 'Showing: Oldest', 'Showing: A–Z'],
+    sortAction: 'Change project order',
+    allLanguages: '🌐 All languages',
+    loadErrorTitle: '📂 Projects unavailable right now',
+    loadError: 'Could not load the project list. Please try again shortly.',
+    viewOnGitHub: 'See the projects on GitHub',
+    noMatch: 'No project matches the search or the selected filter.',
+    noDescription: 'No description available',
+    updatedAt: date => `| Updated: ${date}`,
+    unknownDate: 'unknown date',
+    downloadSource: name => `Download the source code of ${name}`,
+    previousPage: 'Previous page',
+    nextPage: 'Next page',
+    page: number => `Page ${number}`,
+    countEmpty: total => `📂 No projects found out of ${total}`,
+    countRange: (start, end, total) => `📂 Showing projects ${start}–${end} of ${total}`,
+  },
+};
+
+/**
+ * @param {string} language Valor de <html lang>
+ */
+export function getMessages(language) {
+  return MESSAGES[language] ?? MESSAGES[DEFAULT_LANGUAGE];
+}

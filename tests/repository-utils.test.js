@@ -88,3 +88,14 @@ test('language colors meet WCAG AA on the card and on their own badge', () => {
     assert.ok(contrastRatio(color, badge) >= WCAG_AA_NORMAL_TEXT, `${language} on badge`);
   }
 });
+
+test('getCountLabel and formatDate follow the page language', () => {
+  assert.equal(
+    getCountLabel({ page: 1, perPage: 10, visibleCount: 10, filteredCount: 19, totalCount: 19 }, 'en'),
+    '📂 Showing projects 1–10 of 19',
+  );
+  assert.equal(getCountLabel({ page: 1, perPage: 10, visibleCount: 0, filteredCount: 0, totalCount: 19 }, 'en'),
+    '📂 No projects found out of 19');
+  assert.equal(formatDate('2026-10-21T12:00:00Z', 'en'), '10/21/2026');
+  assert.equal(formatDate('', 'en'), 'unknown date');
+});
