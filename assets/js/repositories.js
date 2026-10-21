@@ -47,7 +47,7 @@ export async function loadRepositories() {
   // Itens após o primeiro se sobrepõem em 1px, como na paginação original
   const PAGE_ITEM_CLASSES = 'not-first:-ml-px';
   const PAGE_LINK_CLASSES = [
-    'cursor-pointer rounded-full border-0 bg-white px-4 py-[0.6rem] text-[0.95rem] text-[#333]',
+    'min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-white px-4 py-[0.6rem] text-[0.95rem] text-[#333]',
     'shadow-[0_2px_6px_rgb(0_0_0/0.1)] transition-all duration-200 ease-[ease]',
     'hover:-translate-y-0.5 hover:bg-[#f0f0f0] hover:shadow-[0_4px_10px_rgb(0_0_0/0.15)] active:scale-95',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6c757d]',
