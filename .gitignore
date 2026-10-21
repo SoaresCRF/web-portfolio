@@ -1,6 +1,9 @@
 # Local restore guide: kept in the Drive backup, not versioned
 /RESTORE.md
 
+# Local recommendations list: planning notes, not versioned
+/RECOMENDACOES.md
+
 # Dependencies
 node_modules/
 
