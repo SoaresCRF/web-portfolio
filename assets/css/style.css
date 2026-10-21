@@ -59,6 +59,18 @@
         line-height: 1.2;
     }
 
+    /* Respeita quem pede menos movimento: animações e transições ficam instantâneas.
+       !important é necessário para vencer as utilidades de transição/animação. */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
     p,
     ul,
     h4,
@@ -89,7 +101,7 @@
 
         &:hover,
         &:active,
-        &.active {
+        &[aria-current='page'] {
             color: var(--color-white);
             background-color: var(--btn-color, var(--color-ink));
         }
