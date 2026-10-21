@@ -1,4 +1,146 @@
-<section aria-labelledby="repository-count" class="container mb-12 px-4 pt-6 pb-12 md:px-12">
+<div class="container mb-12 px-4 pt-6 pb-12 md:px-12">
+    <!-- Projetos em destaque (conteúdo do currículo) -->
+    <section aria-labelledby="featured-heading" class="mb-16">
+        <h2 id="featured-heading" class="mb-12 border-b border-line pb-2 text-center text-h3 font-bold text-ink">
+            ⭐ Projetos em destaque
+        </h2>
+        <ul class="grid gap-4 lg:grid-cols-2">
+            <li>
+                <article class="flex h-full flex-col rounded-2xl bg-white p-4 shadow-list md:p-5"
+                    aria-labelledby="featured-1">
+                    <div class="mb-2 flex flex-wrap items-center gap-2">
+                    <span class="rounded-full bg-[#e7f1ff] text-[#0a58ca] px-3 py-1 text-sm font-semibold">Projeto de extensão · UNINTER</span>
+                        <span class="text-sm text-muted">jul/2025 – set/2025</span>
+                    </div>
+                    <h3 id="featured-1" class="mb-2 text-left text-xl font-bold">LittleSounds</h3>
+                    <p class="mb-3 text-left">App Android que ensina inglês a crianças com imagens, sons e animações, compartilhado com famílias e usado por crianças em Feira de Santana/BA.</p>
+                    <ul class="mb-4 list-disc space-y-1 pl-5 text-left text-sm text-muted">
+                    <li>App nativo em Kotlin com interface simples e segura para o público infantil.</li>
+                    <li>API REST própria em Node.js no Render; PostgreSQL e mídias no Supabase, com áudio por streaming.</li>
+                    </ul>
+                    <ul class="mb-4 flex flex-wrap gap-2 text-sm" aria-label="Tecnologias do LittleSounds">
+                    <li class="rounded-full bg-surface px-3 py-1">Kotlin</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Android</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Node.js</li>
+                    <li class="rounded-full bg-surface px-3 py-1">API REST</li>
+                    <li class="rounded-full bg-surface px-3 py-1">PostgreSQL</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Supabase</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Render</li>
+                    </ul>
+                    <div class="mt-auto flex flex-wrap gap-x-6 gap-y-2">
+                    <a href="https://github.com/SoaresCRF/kotlin-mobile-littlesounds" target="_blank" rel="noopener noreferrer"
+                        class="font-semibold text-link underline-offset-2 hover:underline"
+                        aria-label="Ver código do LittleSounds no GitHub">
+                        Ver código <span aria-hidden="true">↗</span>
+                    </a>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="flex h-full flex-col rounded-2xl bg-white p-4 shadow-list md:p-5"
+                    aria-labelledby="featured-2">
+                    <div class="mb-2 flex flex-wrap items-center gap-2">
+                    <span class="rounded-full bg-surface text-ink px-3 py-1 text-sm font-semibold">Projeto pessoal</span>
+                    <span class="rounded-full bg-[#fff3cd] text-[#664d03] px-3 py-1 text-sm font-semibold">Em construção</span>
+                        <span class="text-sm text-muted">desde ago/2026</span>
+                    </div>
+                    <h3 id="featured-2" class="mb-2 text-left text-xl font-bold">Agendamento Multi-Nicho</h3>
+                    <p class="mb-3 text-left">Sistema de agendamento para profissionais autônomos: cada profissional tem uma página pública em que o cliente vê os horários livres e agenda sem criar conta.</p>
+                    <ul class="mb-4 list-disc space-y-1 pl-5 text-left text-sm text-muted">
+                    <li>Cálculo de horários livres cruzando disponibilidade, regras por tipo de atendimento, bloqueios e feriados, com datas em UTC.</li>
+                    <li>Segurança: JWT com refresh token em cookie httpOnly, senhas com bcrypt, validação com Zod, rate limiting e controle de acesso por recurso.</li>
+                    <li>Testes com Vitest e Supertest, CI no GitHub Actions e Docker Compose para o banco local.</li>
+                    </ul>
+                    <ul class="mb-4 flex flex-wrap gap-2 text-sm" aria-label="Tecnologias do Agendamento Multi-Nicho">
+                    <li class="rounded-full bg-surface px-3 py-1">React</li>
+                    <li class="rounded-full bg-surface px-3 py-1">TypeScript</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Vite</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Tailwind CSS</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Node.js</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Express</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Prisma</li>
+                    <li class="rounded-full bg-surface px-3 py-1">PostgreSQL</li>
+                    </ul>
+                    <div class="mt-auto flex flex-wrap gap-x-6 gap-y-2">
+                    <a href="https://github.com/SoaresCRF/agendamento-multi-nicho" target="_blank" rel="noopener noreferrer"
+                        class="font-semibold text-link underline-offset-2 hover:underline"
+                        aria-label="Ver código do Agendamento Multi-Nicho no GitHub">
+                        Ver código <span aria-hidden="true">↗</span>
+                    </a>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="flex h-full flex-col rounded-2xl bg-white p-4 shadow-list md:p-5"
+                    aria-labelledby="featured-3">
+                    <div class="mb-2 flex flex-wrap items-center gap-2">
+                    <span class="rounded-full bg-surface text-ink px-3 py-1 text-sm font-semibold">Projeto pessoal</span>
+                        <span class="text-sm text-muted">out/2025 – dez/2025</span>
+                    </div>
+                    <h3 id="featured-3" class="mb-2 text-left text-xl font-bold">DayX</h3>
+                    <p class="mb-3 text-left">App Android que exibe os fatos históricos de cada dia a partir de uma API pública, com cache local para uso offline.</p>
+                    <ul class="mb-4 list-disc space-y-1 pl-5 text-left text-sm text-muted">
+                    <li>Arquitetura MVVM com Jetpack Compose, StateFlow e injeção de dependência com Hilt.</li>
+                    <li>Cache offline com Room e preferências com DataStore.</li>
+                    </ul>
+                    <ul class="mb-4 flex flex-wrap gap-2 text-sm" aria-label="Tecnologias do DayX">
+                    <li class="rounded-full bg-surface px-3 py-1">Kotlin</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Jetpack Compose</li>
+                    <li class="rounded-full bg-surface px-3 py-1">MVVM</li>
+                    <li class="rounded-full bg-surface px-3 py-1">StateFlow</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Retrofit</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Room</li>
+                    <li class="rounded-full bg-surface px-3 py-1">DataStore</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Hilt</li>
+                    </ul>
+                    <div class="mt-auto flex flex-wrap gap-x-6 gap-y-2">
+                    <a href="https://github.com/SoaresCRF/kotlin-mobile-dayx" target="_blank" rel="noopener noreferrer"
+                        class="font-semibold text-link underline-offset-2 hover:underline"
+                        aria-label="Ver código do DayX no GitHub">
+                        Ver código <span aria-hidden="true">↗</span>
+                    </a>
+                    </div>
+                </article>
+            </li>
+            <li>
+                <article class="flex h-full flex-col rounded-2xl bg-white p-4 shadow-list md:p-5"
+                    aria-labelledby="featured-4">
+                    <div class="mb-2 flex flex-wrap items-center gap-2">
+                    <span class="rounded-full bg-surface text-ink px-3 py-1 text-sm font-semibold">Projeto pessoal</span>
+                        <span class="text-sm text-muted">desde mai/2025</span>
+                    </div>
+                    <h3 id="featured-4" class="mb-2 text-left text-xl font-bold">Portfólio Web e Mobile</h3>
+                    <p class="mb-3 text-left">Este portfólio, em duas versões (site e app Android), lista meus repositórios do GitHub com busca, filtro por tecnologia e ordenação, via API própria em Node.js integrada à API do GitHub.</p>
+                    <ul class="mb-4 list-disc space-y-1 pl-5 text-left text-sm text-muted">
+                    <li>App Android com acessibilidade para leitor de tela (TalkBack).</li>
+                    <li>Site com Tailwind CSS e Vite, testes automatizados e deploy contínuo no GitHub Actions.</li>
+                    </ul>
+                    <ul class="mb-4 flex flex-wrap gap-2 text-sm" aria-label="Tecnologias do Portfólio Web e Mobile">
+                    <li class="rounded-full bg-surface px-3 py-1">JavaScript</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Tailwind CSS</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Vite</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Kotlin</li>
+                    <li class="rounded-full bg-surface px-3 py-1">Node.js</li>
+                    </ul>
+                    <div class="mt-auto flex flex-wrap gap-x-6 gap-y-2">
+                    <a href="https://github.com/SoaresCRF/web-portfolio" target="_blank" rel="noopener noreferrer"
+                        class="font-semibold text-link underline-offset-2 hover:underline"
+                        aria-label="Código do site do Portfólio Web e Mobile no GitHub">
+                        Código do site <span aria-hidden="true">↗</span>
+                    </a>
+                    <a href="https://github.com/SoaresCRF/kotlin-mobile-portfolio" target="_blank" rel="noopener noreferrer"
+                        class="font-semibold text-link underline-offset-2 hover:underline"
+                        aria-label="Código do app do Portfólio Web e Mobile no GitHub">
+                        Código do app <span aria-hidden="true">↗</span>
+                    </a>
+                    </div>
+                </article>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Todos os repositórios públicos (via API) -->
+<section aria-labelledby="repository-count">
     <!-- Cabeçalho com contador -->
     <h2 id="repository-count" class="mb-12 border-b border-line pb-2 text-center text-h3 font-bold text-ink">
         📂 Carregando projetos…
@@ -84,3 +226,4 @@
         </li>
     </template>
 </section>
+</div>
