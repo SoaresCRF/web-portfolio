@@ -5,7 +5,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test"
+    "test": "node --test",
+    "fetch-repos": "node scripts/fetch-repositories.js",
+    "prebuild": "npm run fetch-repos"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.3",

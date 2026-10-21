@@ -5,6 +5,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Daily rebuild refreshes repositories.json (the GitHub list in the Projects section).
+  # GitHub disables scheduled workflows after 60 days without repository activity.
+  schedule:
+    - cron: '0 9 * * *'
   pull_request:
   workflow_dispatch:
 
@@ -22,7 +26,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      # prebuild runs fetch-repos; the token only raises the GitHub API rate limit
       - run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-pages-artifact@v5
         if: github.event_name != 'pull_request'
         with:

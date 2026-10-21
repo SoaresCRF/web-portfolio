@@ -6,9 +6,8 @@ import {
   normalizeRepositories,
 } from './repository-utils.js';
 
-const API_URL = 'https://portfolio-repositories-backend.onrender.com/repositories';
-// O serviço gratuito do Render hiberna e pode levar dezenas de segundos para acordar
-const API_TIMEOUT_MS = 60_000;
+// Gerado a cada build a partir da API do GitHub (scripts/fetch-repositories.js) e servido junto com o site
+const REPOSITORIES_URL = 'repositories.json';
 const GITHUB_PROFILE_URL = 'https://github.com/SoaresCRF';
 const DEVICON_BASE_URL = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.17.0/icons';
 
@@ -26,7 +25,7 @@ function requestRepositories() {
 }
 
 async function fetchRepositories() {
-  const response = await fetch(API_URL, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
+  const response = await fetch(REPOSITORIES_URL);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return normalizeRepositories(await response.json());
 }
@@ -74,7 +73,6 @@ export async function loadRepositories() {
 
   async function initialize() {
     updateSortButtonLabel();
-    showStatus('O servidor pode levar alguns segundos para responder.');
 
     try {
       repositories = await requestRepositories();
@@ -84,7 +82,7 @@ export async function loadRepositories() {
       return;
     }
 
-    // O usuário pode ter trocado de seção enquanto a API respondia
+    // O usuário pode ter trocado de seção enquanto a lista carregava
     if (!DOM.list.isConnected) return;
 
     populateLanguageDropdown(repositories);
