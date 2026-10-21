@@ -121,7 +121,14 @@
 
             <div>
                 <p class="mb-1 text-center italic">Um jovem desenvolvedor. 🚀</p>
-                <p class="text-center">&copy; 2025 Matheus Soares.</p>
+                <!-- Ano final atualizado em dynamic-content.js; o valor fixo é só o fallback sem JS -->
+                <p class="text-center">
+                    <span class="whitespace-nowrap">&copy; 2025–<span id="current-year">2026</span> Matheus Soares</span>
+                    <span aria-hidden="true">·</span> <span class="whitespace-nowrap">Feito com Vite e Tailwind</span>
+                    <span aria-hidden="true">·</span>
+                    <a href="https://github.com/SoaresCRF/web-portfolio" class="font-semibold text-link"
+                        target="_blank" rel="noopener noreferrer">Código-fonte</a>
+                </p>
             </div>
         </div>
     </footer>

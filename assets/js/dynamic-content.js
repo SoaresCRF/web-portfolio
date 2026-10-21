@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Abre a seção indicada pela âncora da URL ("Sobre Mim" quando não há âncora válida)
    */
   const initializePage = () => {
+    document.getElementById('current-year').textContent = new Date().getFullYear();
     setupMenuEventListeners();
     showSection(getSectionFromHash(location.hash));
   };
