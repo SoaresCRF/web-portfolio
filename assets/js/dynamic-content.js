@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
    * Recarrega a animação de fade-in forçando o reflow
    */
   const triggerFadeInAnimation = () => {
-    contentContainer.classList.remove('fade-in-section');
+    contentContainer.classList.remove('animate-fade-in');
     void contentContainer.offsetWidth; // Força o reflow
-    contentContainer.classList.add('fade-in-section');
+    contentContainer.classList.add('animate-fade-in');
   };
 
   /**
