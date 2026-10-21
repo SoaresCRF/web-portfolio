@@ -3,15 +3,82 @@
     🧠 <span class="sr-only">Seção:</span> Conhecimentos instalados...
   </h2>
 
-  <!-- Formação Acadêmica -->
+  <!-- Formação Acadêmica: linha do tempo -->
   <section aria-labelledby="formacao-heading" class="mb-12">
-    <h3 id="formacao-heading" class="mb-4 text-lead font-semibold text-muted uppercase">
-      📚 <span class="sr-only">Subseção:</span> <span class="text-[1.3rem]">Formação Acadêmica e Cursos</span>
+    <h3 id="formacao-heading" class="mb-6 text-lead font-semibold text-muted uppercase">
+      🎓 <span class="text-[1.3rem]">Formação Acadêmica</span>
+    </h3>
+    <ol class="relative ml-1 space-y-8 border-l-2 border-line pl-5 md:ml-3 md:pl-8">
+      <li class="relative">
+        <span class="absolute top-6 -left-[calc(1.75rem+1px)] md:-left-[calc(2.5rem+1px)] size-4 rounded-full border-4 border-white bg-[#0a58ca] shadow-list"
+          aria-hidden="true"></span>
+        <article class="rounded-2xl bg-white p-4 shadow-list md:p-6">
+          <div class="mb-2 flex flex-wrap items-center gap-2">
+            <span class="rounded-full bg-[#e7f1ff] px-3 py-1 text-sm font-semibold text-[#0a58ca]">Em andamento</span>
+            <span class="text-sm text-muted">
+              <time datetime="2025-06">jun/2025</time> – <time datetime="2027-12">dez/2027</time> (previsão)
+            </span>
+          </div>
+          <h4 class="text-left text-xl font-bold">Graduação em Análise e Desenvolvimento de Sistemas</h4>
+          <p class="mb-4 text-left text-muted">UNINTER — Centro Universitário Internacional</p>
+
+          <div class="rounded-xl border-l-4 border-[#0a58ca] bg-surface p-3 md:p-4">
+            <p class="mb-1 text-left font-semibold">⭐ Destaque: projeto de extensão LittleSounds</p>
+            <p class="mb-3 text-left">
+              App Android que ensina inglês a crianças com imagens, sons e animações, compartilhado com famílias e
+              usado por crianças em Feira de Santana/BA. App nativo em Kotlin com API REST própria em Node.js.
+            </p>
+            <ul class="mb-3 flex flex-wrap gap-2 text-sm" aria-label="Tecnologias do LittleSounds">
+              <li class="rounded-full bg-white px-3 py-1 shadow-list">Kotlin</li>
+              <li class="rounded-full bg-white px-3 py-1 shadow-list">Android</li>
+              <li class="rounded-full bg-white px-3 py-1 shadow-list">Node.js</li>
+              <li class="rounded-full bg-white px-3 py-1 shadow-list">API REST</li>
+              <li class="rounded-full bg-white px-3 py-1 shadow-list">PostgreSQL</li>
+              <li class="rounded-full bg-white px-3 py-1 shadow-list">Supabase</li>
+              <li class="rounded-full bg-white px-3 py-1 shadow-list">Render</li>
+            </ul>
+            <a href="https://github.com/SoaresCRF/kotlin-mobile-littlesounds" target="_blank" rel="noopener noreferrer"
+              class="font-semibold text-link underline-offset-2 hover:underline">
+              Ver código no GitHub <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
+      </li>
+
+      <li class="relative">
+        <span class="absolute top-6 -left-[calc(1.75rem+1px)] md:-left-[calc(2.5rem+1px)] size-4 rounded-full border-4 border-white bg-[#146c43] shadow-list"
+          aria-hidden="true"></span>
+        <article class="rounded-2xl bg-white p-4 shadow-list md:p-6">
+          <div class="mb-2 flex flex-wrap items-center gap-2">
+            <span class="rounded-full bg-[#d1e7dd] px-3 py-1 text-sm font-semibold text-[#146c43]">Concluído</span>
+            <span class="text-sm text-muted">
+              <time datetime="2021-06">jun/2021</time> – <time datetime="2022-12">dez/2022</time>
+            </span>
+          </div>
+          <h4 class="text-left text-xl font-bold">Técnico em Desenvolvimento de Sistemas</h4>
+          <p class="mb-4 text-left text-muted">SENAI — Feira de Santana/BA</p>
+
+          <p class="mb-2 text-left font-semibold">Principais conteúdos</p>
+          <ul class="flex flex-wrap gap-2 text-sm" aria-label="Principais conteúdos do curso técnico">
+            <li class="rounded-full bg-surface px-3 py-1">Java</li>
+            <li class="rounded-full bg-surface px-3 py-1">Python</li>
+            <li class="rounded-full bg-surface px-3 py-1">PHP</li>
+            <li class="rounded-full bg-surface px-3 py-1">Desenvolvimento web e mobile</li>
+            <li class="rounded-full bg-surface px-3 py-1">Banco de dados MySQL</li>
+            <li class="rounded-full bg-surface px-3 py-1">Padrões de projeto</li>
+            <li class="rounded-full bg-surface px-3 py-1">Testes de sistemas</li>
+          </ul>
+        </article>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Cursos -->
+  <section aria-labelledby="cursos-heading" class="mb-12">
+    <h3 id="cursos-heading" class="mb-4 text-lead font-semibold text-muted uppercase">
+      📚 <span class="text-[1.3rem]">Cursos</span>
     </h3>
     <ul class="overflow-hidden rounded-2xl shadow-list divide-y divide-line *:bg-white *:p-4 *:text-item">
-      <li>🎓 <strong>Graduando em Análise e Desenvolvimento de Sistemas</strong> – UNINTER
-      </li>
-      <li>🎓 <strong>Curso Técnico em Desenvolvimento de Sistemas</strong> – SENAI/BA</li>
       <li>🧑‍💻 <strong>Desenvolvimento Android Completo</strong> – Udemy (online)</li>
       <li>🌐 <strong>Desenvolvimento Web Completo</strong> – Udemy (online)</li>
       <li>⚙️ <strong>Desenvolvimento Web Moderno com JavaScript</strong> – Udemy (online)
