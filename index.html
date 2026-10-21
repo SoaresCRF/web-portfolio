@@ -60,7 +60,8 @@
     <main id="main" tabindex="-1" class="my-6 grow">
         <div class="container rounded-2xl bg-white p-6 shadow-panel md:p-12">
             <section id="content" class="animate-fade-in">
-                <p>Carregando conteúdo...</p>
+                <!-- Altura de tela enquanto carrega: o rodapé não aparece para depois ser empurrado (CLS) -->
+                <p class="min-h-screen">Carregando conteúdo...</p>
             </section>
         </div>
     </main>
