@@ -36,6 +36,9 @@
 
 <body class="flex min-h-screen flex-col bg-linear-to-r from-[#eef2f3] to-[#8e9eab] text-ink">
 
+    <a href="#main" data-skip-link
+        class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-ink">Pular para o conteúdo</a>
+
     <!-- Cabeçalho -->
     <header class="py-12">
         <div class="container">
@@ -45,11 +48,11 @@
             <p class="mb-4 text-right text-lg font-semibold">
                 <span aria-hidden="true">🌐</span>
                 <span class="sr-only">Idioma:</span>
-                <span aria-current="true" class="text-link">PT</span>
+                <span aria-current="true" class="text-link-strong">PT</span>
                 <span aria-hidden="true">|</span>
                 <a href="en/" hreflang="en" lang="en" data-language-switch
-                    class="text-ink underline-offset-2 hover:text-link hover:underline"
-                    aria-label="English version">EN</a>
+                    class="text-ink underline underline-offset-2 hover:text-link-strong">EN<span
+                        class="sr-only"> (English version)</span></a>
             </p>
 
             <nav class="mb-6" aria-label="Navegação principal">
@@ -77,12 +80,12 @@
                 <p class="mb-2 text-center">Baixe a versão mobile para Android ou confira o projeto no GitHub:</p>
                 <div class="inline-flex flex-wrap justify-center gap-2">
                     <a href="https://github.com/SoaresCRF/kotlin-mobile-portfolio/releases/download/v1.3.0/soares-v1.3.0.apk"
-                        class="font-semibold text-link" rel="noopener noreferrer">
+                        class="font-semibold text-link-strong" rel="noopener noreferrer">
                         📥 Download
                     </a>
                     <span aria-hidden="true">|</span>
                     <a href="https://github.com/SoaresCRF/kotlin-mobile-portfolio"
-                        class="font-semibold text-link" target="_blank" rel="noopener noreferrer">
+                        class="font-semibold text-link-strong" target="_blank" rel="noopener noreferrer">
                         💻 GitHub
                     </a>
                 </div>
@@ -141,7 +144,7 @@
                     <span class="whitespace-nowrap">&copy; 2025–<span id="current-year">2026</span> Matheus Soares</span>
                     <span aria-hidden="true">·</span> <span class="whitespace-nowrap">Feito com Vite e Tailwind</span>
                     <span aria-hidden="true">·</span>
-                    <a href="https://github.com/SoaresCRF/web-portfolio" class="font-semibold text-link"
+                    <a href="https://github.com/SoaresCRF/web-portfolio" class="font-semibold text-link-strong underline underline-offset-2"
                         target="_blank" rel="noopener noreferrer">Código-fonte</a>
                 </p>
             </div>

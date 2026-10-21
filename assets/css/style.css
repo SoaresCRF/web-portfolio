@@ -16,7 +16,9 @@
 
     --color-ink: #212529;
     --color-muted: #6c757d;
-    --color-link: #0d6efd;
+    /* #0a58ca: 4,5:1+ sobre branco e #f8f9fa; #052c65: 4,5:1+ até no fim mais escuro do gradiente (#8e9eab) */
+    --color-link: #0a58ca;
+    --color-link-strong: #052c65;
     --color-line: #dee2e6;
     --color-surface: #f8f9fa;
 
@@ -106,9 +108,10 @@
             background-color: var(--btn-color, var(--color-ink));
         }
 
+        /* Contorno sólido: o anel translúcido anterior ficava abaixo de 3:1 sobre o gradiente */
         &:focus-visible {
-            outline: 0;
-            box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--btn-color, var(--color-ink)) 50%, transparent);
+            outline: 2px solid var(--btn-color, var(--color-ink));
+            outline-offset: 2px;
         }
     }
 

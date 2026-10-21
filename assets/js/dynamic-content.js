@@ -144,11 +144,23 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /**
+   * Link "Pular para o conteúdo": a âncora #main dispararia o hashchange e trocaria a seção,
+   * então o foco vai direto para o <main> sem alterar a URL
+   */
+  const setupSkipLink = () => {
+    document.querySelector('a[data-skip-link]')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      document.getElementById('main').focus();
+    });
+  };
+
+  /**
    * Inicializa o carregamento da página
    * Abre a seção indicada pela âncora da URL ("Sobre Mim" quando não há âncora válida)
    */
   const initializePage = () => {
     document.getElementById('current-year').textContent = new Date().getFullYear();
+    setupSkipLink();
     setupMenuEventListeners();
     showSection(getSectionFromHash(location.hash, PAGE_LANGUAGE));
   };

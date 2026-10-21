@@ -463,8 +463,10 @@ export async function loadRepositories() {
     );
   }
 
+  // A paginação é recriada a cada troca de página: sem isto o foco do teclado cairia no <body>
   function scrollToTop() {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     DOM.count.closest('section').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    DOM.count.focus({ preventScroll: true });
   }
 }
