@@ -32,6 +32,7 @@ npm install       # instala as dependências
 npm run dev       # servidor local: http://localhost:5173/web-portfolio/
 npm run build     # gera o site em dist/
 npm run preview   # serve o build de dist/ localmente
+npm test          # testes das funções puras da seção de projetos (node:test, sem dependências)
 ```
 - `index.html`, `assets/css/style.css` (Tailwind) e `assets/js/` são processados pelo Vite.
 - `public/` é copiado sem alterações: as seções carregadas via `fetch` (`about.html`, `education.html`, `projects.html`), o manifest e os ícones Android.
