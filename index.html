@@ -46,7 +46,7 @@
                         class="font-semibold text-link" rel="noopener noreferrer">
                         📥 Download
                     </a>
-                    <span>|</span>
+                    <span aria-hidden="true">|</span>
                     <a href="https://github.com/SoaresCRF/kotlin-mobile-portfolio"
                         class="font-semibold text-link" target="_blank" rel="noopener noreferrer">
                         💻 GitHub
@@ -59,8 +59,7 @@
     <!-- Conteúdo principal -->
     <main id="main" tabindex="-1" class="my-6 grow">
         <div class="container rounded-2xl bg-white p-6 shadow-panel md:p-12">
-            <section id="content" class="animate-fade-in" aria-live="polite" aria-labelledby="section-heading">
-                <h2 id="section-heading" class="sr-only">Conteúdo dinâmico da seção</h2>
+            <section id="content" class="animate-fade-in">
                 <p>Carregando conteúdo...</p>
             </section>
         </div>
@@ -74,7 +73,7 @@
             </h2>
 
             <div id="social-network-contacts" class="mt-8 mb-6 flex flex-wrap justify-center gap-6 text-center"
-                aria-label="Redes sociais">
+                role="group" aria-label="Redes sociais">
                 <a href="https://github.com/SoaresCRF" target="_blank" title="GitHub" aria-label="GitHub"
                     class="group">
                     <img src="assets/img/github.png" class="mx-2.5 w-8 grayscale transition-[transform,filter] duration-300 ease-[ease] group-hover:scale-110 group-hover:grayscale-0" alt="GitHub" width="32"
