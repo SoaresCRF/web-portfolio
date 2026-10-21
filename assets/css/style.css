@@ -1,204 +1,159 @@
-/*====================================
-  BASE - Layout e Cores Gerais
-====================================*/
-body {
-    background: linear-gradient(to right, #eef2f3, #8e9eab);
-}
+/* Tailwind CSS source, compiled by Vite through @tailwindcss/vite. */
+@import "tailwindcss";
 
 /*====================================
-  TIPOGRAFIA E TEXTOS
+  TEMA - Breakpoints, cores e tipografia
 ====================================*/
-p,
-ul,
-h4,
-h5 {
-    text-align: justify;
-    letter-spacing: 0.015em;
-}
+@theme {
+    /* Breakpoints kept at the values the layout was designed for (md is already 48rem) */
+    --breakpoint-sm: 36rem;
+    --breakpoint-lg: 62rem;
+    --breakpoint-xl: 75rem;
+    --breakpoint-2xl: 87.5rem;
 
-.subsecao {
-    font-size: 1.3rem;
-}
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans",
+        Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
-/*====================================
-  LISTAS
-====================================*/
-.list-education {
-    color: #777;
-}
+    --color-ink: #212529;
+    --color-muted: #6c757d;
+    --color-link: #0d6efd;
+    --color-line: #dee2e6;
+    --color-surface: #f8f9fa;
 
-ul.list-group li::marker {
-    content: none;
-    /* Remove bullets em navegadores que suportam ::marker */
-}
+    /* Sizes without a paired line-height: they inherit it, like the original layout */
+    --text-lead: 1.25rem;
+    --text-small: 0.875em;
+    --text-item: 1.1rem;
+    --text-item--line-height: 1.6;
 
-.list-group-item {
-    background-color: transparent;
-    border-color: #dee2e6;
-    font-size: 1.1rem;
-    line-height: 1.6;
-}
+    --shadow-panel: 0 0.5rem 1rem rgb(0 0 0 / 0.15);
+    --shadow-list: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
+    --shadow-raised: 0 4px 12px rgb(0 0 0 / 0.1);
+    --shadow-pressed: 0 2px 6px rgb(0 0 0 / 0.2);
 
-/*====================================
-  Foco em Campos
-====================================*/
-input:focus,
-#dropdown-button:focus {
-    border-color: #343a40 !important;
-    box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.25) !important;
-    outline: none;
+    --animate-fade-in: fade-in 0.6s ease-out;
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 /*====================================
-  IMAGENS DE CONTATO / REDES SOCIAIS
+  BASE - Tipografia e textos
 ====================================*/
-.img-contact {
-    width: 2rem;
-    margin: 0 0.625rem;
-    filter: grayscale(100%);
-    transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-#social-network-contacts {
-    text-align: center;
-    margin-top: 2rem;
-}
-
-/* Efeito hover nas imagens de contato dentro de links */
-a:hover .img-contact {
-    transform: scale(1.1);
-    filter: grayscale(0%);
-}
-
-/*====================================
-  BOTÕES - Hover e Active
-====================================*/
-.btn-hover-effect {
-    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(0);
-}
-
-.btn-hover-effect:active {
-    transform: translateY(2px) scale(0.98);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-/*====================================
-  ANIMAÇÕES - Fade In
-====================================*/
-.fade-in-section {
-    animation: fadeIn 0.6s ease-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+@layer base {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.2;
     }
 
-    to {
-        opacity: 1;
+    p,
+    ul,
+    h4,
+    h5 {
+        text-align: justify;
+        letter-spacing: 0.015em;
+    }
+}
+
+/*====================================
+  COMPONENTES - Botões
+====================================*/
+@layer components {
+    /* Outline button; the color comes from --btn-color so variants only set one variable */
+    .btn {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        text-align: center;
+        color: var(--btn-color, var(--color-ink));
+        border: 1px solid var(--btn-color, var(--color-ink));
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+
+        &:hover,
+        &:active,
+        &.active {
+            color: var(--color-white);
+            background-color: var(--btn-color, var(--color-ink));
+        }
+
+        &:focus-visible {
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--btn-color, var(--color-ink)) 50%, transparent);
+        }
+    }
+
+    .btn-hover-effect {
+        box-shadow: var(--shadow-raised);
         transform: translateY(0);
+
+        &:active {
+            transform: translateY(2px) scale(0.98);
+            box-shadow: var(--shadow-pressed);
+        }
     }
 }
 
-#language-filter {
-    position: relative;
+/*====================================
+  UTILITÁRIOS - Container e select
+====================================*/
+/* Centered page container with fixed max-widths per breakpoint */
+@utility container {
     width: 100%;
+    margin-inline: auto;
+    padding-inline: 0.75rem;
+
+    @variant sm {
+        max-width: 540px;
+    }
+
+    @variant md {
+        max-width: 720px;
+    }
+
+    @variant lg {
+        max-width: 960px;
+    }
+
+    @variant xl {
+        max-width: 1140px;
+    }
+
+    @variant 2xl {
+        max-width: 1320px;
+    }
 }
 
-#dropdown-button {
-    width: 100%;
-    text-align: left;
-    padding: 0.375rem 0.75rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
+/* Fluid heading size that settles at 1.75rem on wide screens */
+@utility text-h3 {
+    font-size: calc(1.3rem + 0.6vw);
+
+    @variant xl {
+        font-size: 1.75rem;
+    }
 }
 
-#dropdown-list {
-    position: absolute;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    background: white;
-    border: 1px solid #ccc;
-    margin-top: 2px;
-    padding: 0;
-    list-style: none;
-    z-index: 1000;
-    border-radius: 0.25rem;
-}
-
-#dropdown-list li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.375rem 0.75rem;
-    cursor: pointer;
-}
-
-#dropdown-list li:hover,
-#dropdown-list li[aria-selected="true"] {
-    background-color: #f0f0f0;
-}
-
-#dropdown-list img {
-    width: 20px;
-    height: 20px;
-}
-
-#pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0;
-    list-style: none;
-}
-
-#pagination .page-item {
-    display: inline;
-}
-
-#pagination .page-link {
-    padding: 0.6rem 1rem;
-    border: none;
-    background-color: #ffffff;
-    color: #333;
-    border-radius: 9999px;
-    /* Borda arredondada tipo pill */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.95rem;
-}
-
-#pagination .page-link:hover:not(:disabled) {
-    background-color: #f0f0f0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
-
-#pagination .page-item.active .page-link {
-    background-color: #6c757d;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-#pagination .page-item.disabled .page-link {
-    color: #aaa;
-    background-color: #f3f3f3;
-    cursor: not-allowed;
-    box-shadow: none;
-    pointer-events: none;
-    opacity: 0.6;
-}
-
-#pagination .page-link:active {
-    transform: scale(0.95);
+/* Chevron for the custom language select button */
+@utility bg-chevron {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
 }

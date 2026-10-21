@@ -1,2 +1,8 @@
 # Local restore guide: kept in the Drive backup, not versioned
 /RESTORE.md
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
