@@ -77,8 +77,12 @@
     ul,
     h4,
     h5 {
-        text-align: justify;
         letter-spacing: 0.015em;
+
+        /* Below sm the lines are too short to justify: it opened wide gaps between words */
+        @variant sm {
+            text-align: justify;
+        }
     }
 }
 
