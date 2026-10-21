@@ -10,7 +10,8 @@ Este é o projeto do meu portfólio web, desenvolvido em HTML, CSS e JavaScript.
 
 ## 🛠️ Tecnologias utilizadas
 - HTML, CSS e JavaScript
-- Bootstrap
+- Tailwind CSS v4
+- Vite (build e servidor de desenvolvimento)
 - Consumo de API REST
 - Node.js *(somente como back-end intermediário para requisições GitHub, não incluído neste repositório)*
 
@@ -23,6 +24,20 @@ API Node.js (Render)
 GitHub API
 ```
 - *O site não se conecta diretamente à API pública do GitHub, todas as requisições passam primeiro pela minha API backend (Node.js) hospedada no Render.*
+
+## 💻 Desenvolvimento
+Requer Node.js 20.19+ ou 22.12+.
+```bash
+npm install       # instala as dependências
+npm run dev       # servidor local: http://localhost:5173/web-portfolio/
+npm run build     # gera o site em dist/
+npm run preview   # serve o build de dist/ localmente
+```
+- `index.html`, `assets/css/style.css` (Tailwind) e `assets/js/` são processados pelo Vite.
+- `public/` é copiado sem alterações: as seções carregadas via `fetch` (`about.html`, `education.html`, `projects.html`), o manifest e os ícones Android.
+
+## 🚀 Deploy
+O workflow `Deploy to GitHub Pages` (GitHub Actions) faz o build e publica `dist/` a cada push na `main`; em pull requests ele só valida o build. Em **Settings › Pages**, a origem deve estar como **GitHub Actions**.
 
 ## 📄 Licença
 Este projeto está sob a licença MIT.
