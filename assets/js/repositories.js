@@ -1,7 +1,39 @@
+import {
+  DEFAULT_LANGUAGE_COLOR,
+  LANGUAGE_COLORS,
+  formatDate,
+  getCountLabel,
+  normalizeRepositories,
+} from './repository-utils.js';
+
+const API_URL = 'https://portfolio-repositories-backend.onrender.com/repositories';
+// O serviço gratuito do Render hiberna e pode levar dezenas de segundos para acordar
+const API_TIMEOUT_MS = 60_000;
+const GITHUB_PROFILE_URL = 'https://github.com/SoaresCRF';
+const DEVICON_BASE_URL = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.17.0/icons';
+
+// Uma única requisição por visita: reabrir a seção reaproveita o resultado (ou tenta de novo após falha)
+let repositoriesRequest = null;
+// Listeners no document são trocados a cada abertura da seção para não acumularem
+let documentListeners = null;
+
+function requestRepositories() {
+  repositoriesRequest ??= fetchRepositories().catch(error => {
+    repositoriesRequest = null;
+    throw error;
+  });
+  return repositoriesRequest;
+}
+
+async function fetchRepositories() {
+  const response = await fetch(API_URL, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return normalizeRepositories(await response.json());
+}
+
 // Repositório principal para carregar os repositórios do portfólio
 export async function loadRepositories() {
   // =================== CONFIGURAÇÕES ===================
-  const API_URL = 'https://portfolio-repositories-backend.onrender.com/repositories';
   const EXCLUDED_REPO = 'SoaresCRF';
   const ITEMS_PER_PAGE = 10;
   const SORT_LABELS = ['Exibindo: Recentes', 'Exibindo: Antigos', 'Exibindo: A–Z'];
@@ -20,13 +52,6 @@ export async function loadRepositories() {
     'aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:bg-[#f3f3f3]',
     'aria-disabled:text-[#aaa] aria-disabled:opacity-60 aria-disabled:shadow-none',
   ].join(' ');
-
-  const LANGUAGE_COLORS = {
-    Java: "#b07219", Python: "#3572A5", JavaScript: "#f1e05a", TypeScript: "#3178c6",
-    HTML: "#e34c26", CSS: "#563d7c", C: "#555555", "C++": "#f34b7d",
-    "C#": "#178600", PHP: "#4F5D95", Swift: "#ffac45", Kotlin: "#A97BFF",
-    Go: "#00ADD8", Ruby: "#701516", Shell: "#89e051"
-  };
 
   const LANGUAGE_ICONS = generateLanguageIcons();
 
@@ -48,22 +73,45 @@ export async function loadRepositories() {
   // =================== FUNÇÕES AUXILIARES ===================
 
   async function initialize() {
-    repositories = await fetchRepositories();
-    populateLanguageDropdown(repositories);
     updateSortButtonLabel();
+    showStatus('O servidor pode levar alguns segundos para responder.');
+
+    try {
+      repositories = await requestRepositories();
+    } catch (error) {
+      console.error('❌ Erro ao buscar repositórios:', error);
+      if (DOM.list.isConnected) renderLoadError();
+      return;
+    }
+
+    // O usuário pode ter trocado de seção enquanto a API respondia
+    if (!DOM.list.isConnected) return;
+
+    populateLanguageDropdown(repositories);
     setupEventListeners();
     updateDisplay();
   }
 
-  async function fetchRepositories() {
-    try {
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      console.error('❌ Erro ao buscar repositórios:', error.message);
-      return [];
-    }
+  // A região role="status" fica sempre no DOM (vazia quando não há mensagem) para ser anunciada
+  function showStatus(message, link) {
+    DOM.status.replaceChildren(message);
+    if (link) DOM.status.append(' ', link);
+  }
+
+  function clearStatus() {
+    DOM.status.replaceChildren();
+  }
+
+  function renderLoadError() {
+    const profileLink = document.createElement('a');
+    profileLink.href = GITHUB_PROFILE_URL;
+    profileLink.target = '_blank';
+    profileLink.rel = 'noopener noreferrer';
+    profileLink.className = 'font-semibold text-link underline';
+    profileLink.textContent = 'Ver os projetos no GitHub';
+
+    DOM.count.textContent = '📂 Projetos indisponíveis no momento';
+    showStatus('Não foi possível carregar a lista de projetos. Tente novamente em instantes.', profileLink);
   }
 
   function getDOMElements() {
@@ -72,6 +120,7 @@ export async function loadRepositories() {
       search: document.getElementById('search'),
       sortButton: document.getElementById('sort-button'),
       count: document.getElementById('repository-count'),
+      status: document.getElementById('repository-status'),
       template: document.getElementById('repository-template'),
       pagination: document.getElementById('pagination'),
       dropdownButton: document.getElementById('dropdown-button'),
@@ -80,7 +129,7 @@ export async function loadRepositories() {
   }
 
   function generateLanguageIcons() {
-    const base = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
+    const base = DEVICON_BASE_URL;
     return {
       Java: `${base}/java/java-original.svg`,
       Python: `${base}/python/python-original.svg`,
@@ -107,11 +156,13 @@ export async function loadRepositories() {
     DOM.dropdownButton.addEventListener('keydown', handleDropdownButtonKeydown);
     DOM.dropdownList.addEventListener('keydown', handleDropdownListKeydown);
 
+    documentListeners?.abort();
+    documentListeners = new AbortController();
     document.addEventListener('click', (event) => {
       if (!DOM.dropdownButton.contains(event.target) && !DOM.dropdownList.contains(event.target)) {
         closeDropdown();
       }
-    });
+    }, { signal: documentListeners.signal });
   }
 
   function handleSort() {
@@ -218,7 +269,8 @@ export async function loadRepositories() {
     if (!isAll && LANGUAGE_ICONS[language]) {
       const img = document.createElement('img');
       img.src = LANGUAGE_ICONS[language];
-      img.alt = `${language} icon`;
+      img.alt = '';
+      img.loading = 'lazy';
       img.className = LANGUAGE_ICON_CLASSES;
       li.appendChild(img);
     }
@@ -245,14 +297,22 @@ export async function loadRepositories() {
       return;
     }
 
+    DOM.dropdownButton.replaceChildren(selectedLanguage);
+
     const iconUrl = LANGUAGE_ICONS[selectedLanguage];
-    DOM.dropdownButton.innerHTML = iconUrl
-      ? `<img src="${iconUrl}" alt="${selectedLanguage} icon" class="${LANGUAGE_ICON_CLASSES}">${selectedLanguage}`
-      : selectedLanguage;
+    if (iconUrl) {
+      const img = document.createElement('img');
+      img.src = iconUrl;
+      img.alt = '';
+      img.className = LANGUAGE_ICON_CLASSES;
+      DOM.dropdownButton.prepend(img);
+    }
   }
 
   function updateSortButtonLabel() {
     DOM.sortButton.textContent = `🗂️ ${SORT_LABELS[sortMode]}`;
+    // O nome acessível inclui o texto visível (WCAG 2.5.3) e explica que o botão alterna a ordem
+    DOM.sortButton.setAttribute('aria-label', `${SORT_LABELS[sortMode]}. Alternar ordenação dos projetos`);
   }
 
   function getFilteredRepositories() {
@@ -306,12 +366,18 @@ export async function loadRepositories() {
     });
 
     updateRepositoryCount(repositoriesToRender.length, totalFilteredCount);
+
+    if (totalFilteredCount === 0) {
+      showStatus('Nenhum projeto corresponde à busca ou ao filtro selecionado.');
+    } else {
+      clearStatus();
+    }
   }
 
   function fillRepositoryTemplate(clone, repository) {
     const language = repository.language || 'N/A';
-    const color = LANGUAGE_COLORS[language] || '#6c757d';
-    const pushedDate = new Date(repository.pushed_at).toLocaleDateString();
+    const color = LANGUAGE_COLORS[language] || DEFAULT_LANGUAGE_COLOR;
+    const pushedDate = formatDate(repository.pushed_at);
 
     const link = clone.querySelector('.repository-link');
     const description = clone.querySelector('.repository-description');
@@ -320,7 +386,8 @@ export async function loadRepositories() {
     const linkDownload = clone.querySelector('[data-download]');
 
     link.textContent = repository.name;
-    link.href = repository.html_url;
+    if (repository.html_url) link.href = repository.html_url;
+    else link.removeAttribute('href');
     link.style.color = color;
 
     description.textContent = repository.description || 'Sem descrição disponível';
@@ -333,29 +400,34 @@ export async function loadRepositories() {
     pushedText.textContent = `| Atualizado em: ${pushedDate}`;
     pushedText.style.color = color;
 
-    linkDownload.href = repository.zip_url;
+    if (repository.zip_url) linkDownload.href = repository.zip_url;
+    else linkDownload.hidden = true;
+    linkDownload.setAttribute('aria-label', `Baixar código fonte de ${repository.name}`);
     linkDownload.style.color = color;
   }
 
   function updateRepositoryCount(visibleCount, totalFilteredCount) {
-    const totalCount = repositories.filter(r => r.name !== EXCLUDED_REPO).length;
-    const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
-    const end = Math.min(start + visibleCount - 1, totalFilteredCount);
-
-    DOM.count.textContent = `📂 Exibindo ${start}–${end} projetos de ${totalCount} no total`;
+    DOM.count.textContent = getCountLabel({
+      page: currentPage,
+      perPage: ITEMS_PER_PAGE,
+      visibleCount,
+      filteredCount: totalFilteredCount,
+      totalCount: repositories.filter(r => r.name !== EXCLUDED_REPO).length,
+    });
   }
 
   function renderPagination(totalPages) {
     DOM.pagination.innerHTML = '';
     if (totalPages <= 1) return;
 
-    const createPageItem = (label, disabled, onClick, active = false) => {
+    const createPageItem = (label, accessibleName, disabled, onClick, active = false) => {
       const li = document.createElement('li');
       li.className = PAGE_ITEM_CLASSES;
 
       const button = document.createElement('button');
       button.className = PAGE_LINK_CLASSES;
       button.textContent = label;
+      button.setAttribute('aria-label', accessibleName);
       if (active) button.setAttribute('aria-current', 'page');
       if (disabled) button.setAttribute('aria-disabled', 'true');
 
@@ -373,23 +445,24 @@ export async function loadRepositories() {
 
     // Botão "Anterior"
     DOM.pagination.appendChild(
-      createPageItem('«', currentPage === 1, () => currentPage--)
+      createPageItem('«', 'Página anterior', currentPage === 1, () => currentPage--)
     );
 
     // Números de página
     for (let i = 1; i <= totalPages; i++) {
       DOM.pagination.appendChild(
-        createPageItem(`${i}`, false, () => currentPage = i, i === currentPage)
+        createPageItem(`${i}`, `Página ${i}`, false, () => currentPage = i, i === currentPage)
       );
     }
 
     // Botão "Próximo"
     DOM.pagination.appendChild(
-      createPageItem('»', currentPage === totalPages, () => currentPage++)
+      createPageItem('»', 'Próxima página', currentPage === totalPages, () => currentPage++)
     );
   }
 
   function scrollToTop() {
-    document.querySelector('section[aria-labelledby="repository-count"]').scrollIntoView({ behavior: 'smooth' });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    DOM.count.closest('section').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
   }
 }
