@@ -19,6 +19,10 @@
     /* #0a58ca: 4,5:1+ sobre branco e #f8f9fa; #052c65: 4,5:1+ até no fim mais escuro do gradiente (#8e9eab) */
     --color-link: #0a58ca;
     --color-link-strong: #052c65;
+    /* Status badges: pale fill behind the matching text color (5,6:1 and 5:1) */
+    --color-link-soft: #e7f1ff;
+    --color-success: #146c43;
+    --color-success-soft: #d1e7dd;
     --color-line: #dee2e6;
     --color-surface: #f8f9fa;
 

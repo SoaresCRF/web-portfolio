@@ -50,8 +50,8 @@ export async function loadRepositories() {
     'min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-white px-4 py-[0.6rem] text-[0.95rem] text-[#333]',
     'shadow-[0_2px_6px_rgb(0_0_0/0.1)] transition-all duration-200 ease-[ease]',
     'hover:-translate-y-0.5 hover:bg-[#f0f0f0] hover:shadow-[0_4px_10px_rgb(0_0_0/0.15)] active:scale-95',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6c757d]',
-    'aria-[current=page]:bg-[#6c757d] aria-[current=page]:text-white aria-[current=page]:shadow-[0_4px_12px_rgb(0_0_0/0.3)]',
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-muted',
+    'aria-[current=page]:bg-muted aria-[current=page]:text-white aria-[current=page]:shadow-[0_4px_12px_rgb(0_0_0/0.3)]',
     'aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:bg-[#f3f3f3]',
     'aria-disabled:text-[#aaa] aria-disabled:opacity-60 aria-disabled:shadow-none',
   ].join(' ');
