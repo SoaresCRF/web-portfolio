@@ -105,6 +105,7 @@
         border-radius: var(--radius-md);
         cursor: pointer;
         user-select: none;
+        box-shadow: var(--shadow-raised);
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
             box-shadow 0.15s ease-in-out;
 
@@ -115,19 +116,15 @@
             background-color: var(--btn-color, var(--color-ink));
         }
 
+        &:active {
+            transform: translateY(2px) scale(0.98);
+            box-shadow: var(--shadow-pressed);
+        }
+
         /* Contorno sólido: o anel translúcido anterior ficava abaixo de 3:1 sobre o gradiente */
         &:focus-visible {
             outline: 2px solid var(--btn-color, var(--color-ink));
             outline-offset: 2px;
-        }
-    }
-
-    .btn-hover-effect {
-        box-shadow: var(--shadow-raised);
-
-        &:active {
-            transform: translateY(2px) scale(0.98);
-            box-shadow: var(--shadow-pressed);
         }
     }
 }
