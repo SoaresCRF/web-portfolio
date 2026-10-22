@@ -13,22 +13,12 @@ const PAGE_LANGUAGE = document.documentElement.lang;
 const MESSAGES = getMessages(PAGE_LANGUAGE);
 const GITHUB_PROFILE_URL = 'https://github.com/SoaresCRF';
 const DEVICON_BASE_URL = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.17.0/icons';
+// Nome do ícone no Devicon por linguagem: o arquivo é sempre {slug}/{slug}-original.svg
 const LANGUAGE_ICONS = {
-  Java: `${DEVICON_BASE_URL}/java/java-original.svg`,
-  Python: `${DEVICON_BASE_URL}/python/python-original.svg`,
-  JavaScript: `${DEVICON_BASE_URL}/javascript/javascript-original.svg`,
-  TypeScript: `${DEVICON_BASE_URL}/typescript/typescript-original.svg`,
-  HTML: `${DEVICON_BASE_URL}/html5/html5-original.svg`,
-  CSS: `${DEVICON_BASE_URL}/css3/css3-original.svg`,
-  C: `${DEVICON_BASE_URL}/c/c-original.svg`,
-  'C++': `${DEVICON_BASE_URL}/cplusplus/cplusplus-original.svg`,
-  'C#': `${DEVICON_BASE_URL}/csharp/csharp-original.svg`,
-  PHP: `${DEVICON_BASE_URL}/php/php-original.svg`,
-  Swift: `${DEVICON_BASE_URL}/swift/swift-original.svg`,
-  Kotlin: `${DEVICON_BASE_URL}/kotlin/kotlin-original.svg`,
-  Go: `${DEVICON_BASE_URL}/go/go-original.svg`,
-  Ruby: `${DEVICON_BASE_URL}/ruby/ruby-original.svg`,
-  Shell: `${DEVICON_BASE_URL}/bash/bash-original.svg`,
+  Java: 'java', Python: 'python', JavaScript: 'javascript', TypeScript: 'typescript',
+  HTML: 'html5', CSS: 'css3', C: 'c', 'C++': 'cplusplus',
+  'C#': 'csharp', PHP: 'php', Swift: 'swift', Kotlin: 'kotlin',
+  Go: 'go', Ruby: 'ruby', Shell: 'bash',
 };
 
 // Uma única requisição por visita: reabrir a seção reaproveita o resultado (ou tenta de novo após falha)
@@ -84,10 +74,6 @@ export async function loadRepositories() {
     dropdownButton: document.getElementById('dropdown-button'),
     dropdownList: document.getElementById('dropdown-list'),
   };
-  if (Object.values(DOM).some(el => !el)) {
-    console.warn('❗ Alguns elementos da interface não foram encontrados.');
-    return;
-  }
 
   // =================== VARIÁVEIS DE ESTADO ===================
   let repositories = [];
@@ -231,7 +217,8 @@ export async function loadRepositories() {
 
   function createLanguageIcon(language) {
     const img = document.createElement('img');
-    img.src = LANGUAGE_ICONS[language];
+    const slug = LANGUAGE_ICONS[language];
+    img.src = `${DEVICON_BASE_URL}/${slug}/${slug}-original.svg`;
     img.alt = '';
     img.className = 'mr-2 size-5';
     return img;
@@ -261,14 +248,10 @@ export async function loadRepositories() {
     getLanguageOptions().forEach(option => {
       option.setAttribute('aria-selected', String(option.dataset.language === language));
     });
-    updateDropdownButtonLabel();
+    DOM.dropdownButton.replaceChildren(language || MESSAGES.allLanguages);
+    if (LANGUAGE_ICONS[language]) DOM.dropdownButton.prepend(createLanguageIcon(language));
     setDropdownOpen(false);
     resetToFirstPage();
-  }
-
-  function updateDropdownButtonLabel() {
-    DOM.dropdownButton.replaceChildren(selectedLanguage || MESSAGES.allLanguages);
-    if (LANGUAGE_ICONS[selectedLanguage]) DOM.dropdownButton.prepend(createLanguageIcon(selectedLanguage));
   }
 
   function updateSortButtonLabel() {
@@ -333,25 +316,23 @@ export async function loadRepositories() {
     const pushedText = clone.querySelector('.repository-pushed');
     const linkDownload = clone.querySelector('[data-download]');
 
+    // Cor da linguagem no <li>: link, descrição, selo, data e ícone de download herdam
+    clone.firstElementChild.style.color = color;
+
     link.textContent = repository.name;
     if (repository.html_url) link.href = repository.html_url;
     else link.removeAttribute('href');
-    link.style.color = color;
 
     description.textContent = repository.description || MESSAGES.noDescription;
-    description.style.color = color;
 
     languageBadge.textContent = language;
     languageBadge.style.backgroundColor = `${color}20`;
-    languageBadge.style.color = color;
 
     pushedText.textContent = MESSAGES.updatedAt(pushedDate);
-    pushedText.style.color = color;
 
     if (repository.zip_url) linkDownload.href = repository.zip_url;
     else linkDownload.hidden = true;
     linkDownload.setAttribute('aria-label', MESSAGES.downloadSource(repository.name));
-    linkDownload.style.color = color;
   }
 
   function renderPagination(totalPages) {
