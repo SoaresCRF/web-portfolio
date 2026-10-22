@@ -31,15 +31,11 @@ export function getSafeGitHubUrl(value) {
 }
 
 /**
- * Valida a resposta da API e mantém só os campos usados pela interface
- * @param {unknown} data
+ * Valida os itens da API e mantém só os campos usados pela interface
+ * @param {unknown[]} data
  * @returns {Array<{name: string, description: string, language: string, pushed_at: string, html_url: string | null, zip_url: string | null}>}
  */
 export function normalizeRepositories(data) {
-  if (!Array.isArray(data)) {
-    throw new TypeError('Resposta inesperada da API de repositórios: era esperado um array');
-  }
-
   return data
     .filter(repository => typeof repository?.name === 'string' && repository.name !== '')
     .map(repository => ({

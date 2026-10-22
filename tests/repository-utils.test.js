@@ -28,11 +28,6 @@ function contrastRatio(rgbA, rgbB) {
   return (light + 0.05) / (dark + 0.05);
 }
 
-test('normalizeRepositories rejects a response that is not an array', () => {
-  assert.throws(() => normalizeRepositories({ message: 'Not Found' }), TypeError);
-  assert.throws(() => normalizeRepositories(null), TypeError);
-});
-
 test('normalizeRepositories drops entries without a name and fills missing fields', () => {
   const result = normalizeRepositories([
     null,
