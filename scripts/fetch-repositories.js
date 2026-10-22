@@ -14,10 +14,7 @@ const OUTPUT_FILE = new URL('../public/repositories.json', import.meta.url);
  * @param {unknown} data
  */
 export function toSiteRepositories(data) {
-  if (!Array.isArray(data)) {
-    throw new TypeError('Resposta inesperada da API do GitHub: era esperado um array');
-  }
-
+  // Resposta que não é array (ex.: erro de rate limit) lança TypeError no .map
   return normalizeRepositories(data.map(repository => ({
     ...repository,
     zip_url: `https://github.com/${GITHUB_USER}/${repository?.name}/archive/refs/heads/${repository?.default_branch || 'main'}.zip`,

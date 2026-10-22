@@ -3,17 +3,33 @@ import {
   LANGUAGE_COLORS,
   formatDate,
   getCountLabel,
-  normalizeRepositories,
 } from './repository-utils.js';
 import { getMessages } from './messages.js';
 
-// Gerado a cada build a partir da API do GitHub (scripts/fetch-repositories.js) e servido na raiz do site,
-// também para a versão em inglês (en/)
+// Gerado e validado a cada build a partir da API do GitHub (scripts/fetch-repositories.js) e servido na raiz
+// do site, também para a versão em inglês (en/)
 const REPOSITORIES_URL = `${import.meta.env.BASE_URL}repositories.json`;
 const PAGE_LANGUAGE = document.documentElement.lang;
 const MESSAGES = getMessages(PAGE_LANGUAGE);
 const GITHUB_PROFILE_URL = 'https://github.com/SoaresCRF';
 const DEVICON_BASE_URL = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.17.0/icons';
+const LANGUAGE_ICONS = {
+  Java: `${DEVICON_BASE_URL}/java/java-original.svg`,
+  Python: `${DEVICON_BASE_URL}/python/python-original.svg`,
+  JavaScript: `${DEVICON_BASE_URL}/javascript/javascript-original.svg`,
+  TypeScript: `${DEVICON_BASE_URL}/typescript/typescript-original.svg`,
+  HTML: `${DEVICON_BASE_URL}/html5/html5-original.svg`,
+  CSS: `${DEVICON_BASE_URL}/css3/css3-original.svg`,
+  C: `${DEVICON_BASE_URL}/c/c-original.svg`,
+  'C++': `${DEVICON_BASE_URL}/cplusplus/cplusplus-original.svg`,
+  'C#': `${DEVICON_BASE_URL}/csharp/csharp-original.svg`,
+  PHP: `${DEVICON_BASE_URL}/php/php-original.svg`,
+  Swift: `${DEVICON_BASE_URL}/swift/swift-original.svg`,
+  Kotlin: `${DEVICON_BASE_URL}/kotlin/kotlin-original.svg`,
+  Go: `${DEVICON_BASE_URL}/go/go-original.svg`,
+  Ruby: `${DEVICON_BASE_URL}/ruby/ruby-original.svg`,
+  Shell: `${DEVICON_BASE_URL}/bash/bash-original.svg`,
+};
 
 // Uma única requisição por visita: reabrir a seção reaproveita o resultado (ou tenta de novo após falha)
 let repositoriesRequest = null;
@@ -31,7 +47,7 @@ function requestRepositories() {
 async function fetchRepositories() {
   const response = await fetch(REPOSITORIES_URL);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return normalizeRepositories(await response.json());
+  return response.json();
 }
 
 // Repositório principal para carregar os repositórios do portfólio
@@ -40,6 +56,12 @@ export async function loadRepositories() {
   const EXCLUDED_REPO = 'SoaresCRF';
   const ITEMS_PER_PAGE = 10;
   const SORT_LABELS = MESSAGES.sortLabels;
+  // Mesma ordem de SORT_LABELS: recentes, antigos, A–Z
+  const SORT_COMPARATORS = [
+    (a, b) => new Date(b.pushed_at) - new Date(a.pushed_at),
+    (a, b) => new Date(a.pushed_at) - new Date(b.pushed_at),
+    (a, b) => a.name.localeCompare(b.name),
+  ];
 
   // Classes Tailwind dos elementos criados dinamicamente (literais completos para o scanner do Tailwind)
   const LANGUAGE_ICON_CLASSES = 'mr-2 size-5';
@@ -56,9 +78,17 @@ export async function loadRepositories() {
     'aria-disabled:text-[#aaa] aria-disabled:opacity-60 aria-disabled:shadow-none',
   ].join(' ');
 
-  const LANGUAGE_ICONS = generateLanguageIcons();
-
-  const DOM = getDOMElements();
+  const DOM = {
+    list: document.getElementById('repository-list'),
+    search: document.getElementById('search'),
+    sortButton: document.getElementById('sort-button'),
+    count: document.getElementById('repository-count'),
+    status: document.getElementById('repository-status'),
+    template: document.getElementById('repository-template'),
+    pagination: document.getElementById('pagination'),
+    dropdownButton: document.getElementById('dropdown-button'),
+    dropdownList: document.getElementById('dropdown-list'),
+  };
   if (Object.values(DOM).some(el => !el)) {
     console.warn('❗ Alguns elementos da interface não foram encontrados.');
     return;
@@ -79,7 +109,7 @@ export async function loadRepositories() {
     updateSortButtonLabel();
 
     try {
-      repositories = await requestRepositories();
+      repositories = (await requestRepositories()).filter(r => r.name !== EXCLUDED_REPO);
     } catch (error) {
       console.error('❌ Erro ao buscar repositórios:', error);
       if (DOM.list.isConnected) renderLoadError();
@@ -100,10 +130,6 @@ export async function loadRepositories() {
     if (link) DOM.status.append(' ', link);
   }
 
-  function clearStatus() {
-    DOM.status.replaceChildren();
-  }
-
   function renderLoadError() {
     const profileLink = document.createElement('a');
     profileLink.href = GITHUB_PROFILE_URL;
@@ -116,44 +142,9 @@ export async function loadRepositories() {
     showStatus(MESSAGES.loadError, profileLink);
   }
 
-  function getDOMElements() {
-    return {
-      list: document.getElementById('repository-list'),
-      search: document.getElementById('search'),
-      sortButton: document.getElementById('sort-button'),
-      count: document.getElementById('repository-count'),
-      status: document.getElementById('repository-status'),
-      template: document.getElementById('repository-template'),
-      pagination: document.getElementById('pagination'),
-      dropdownButton: document.getElementById('dropdown-button'),
-      dropdownList: document.getElementById('dropdown-list'),
-    };
-  }
-
-  function generateLanguageIcons() {
-    const base = DEVICON_BASE_URL;
-    return {
-      Java: `${base}/java/java-original.svg`,
-      Python: `${base}/python/python-original.svg`,
-      JavaScript: `${base}/javascript/javascript-original.svg`,
-      TypeScript: `${base}/typescript/typescript-original.svg`,
-      HTML: `${base}/html5/html5-original.svg`,
-      CSS: `${base}/css3/css3-original.svg`,
-      C: `${base}/c/c-original.svg`,
-      "C++": `${base}/cplusplus/cplusplus-original.svg`,
-      "C#": `${base}/csharp/csharp-original.svg`,
-      PHP: `${base}/php/php-original.svg`,
-      Swift: `${base}/swift/swift-original.svg`,
-      Kotlin: `${base}/kotlin/kotlin-original.svg`,
-      Go: `${base}/go/go-original.svg`,
-      Ruby: `${base}/ruby/ruby-original.svg`,
-      Shell: `${base}/bash/bash-original.svg`,
-    };
-  }
-
   function setupEventListeners() {
     DOM.sortButton.addEventListener('click', handleSort);
-    DOM.search.addEventListener('input', handleSearch);
+    DOM.search.addEventListener('input', resetToFirstPage);
     DOM.dropdownButton.addEventListener('click', toggleDropdown);
     DOM.dropdownButton.addEventListener('keydown', handleDropdownButtonKeydown);
     DOM.dropdownList.addEventListener('keydown', handleDropdownListKeydown);
@@ -170,11 +161,10 @@ export async function loadRepositories() {
   function handleSort() {
     sortMode = (sortMode + 1) % SORT_LABELS.length;
     updateSortButtonLabel();
-    currentPage = 1;
-    updateDisplay();
+    resetToFirstPage();
   }
 
-  function handleSearch() {
+  function resetToFirstPage() {
     currentPage = 1;
     updateDisplay();
   }
@@ -248,19 +238,22 @@ export async function loadRepositories() {
   }
 
   function populateLanguageDropdown(repositories) {
-    const languages = [...new Set(
-      repositories.filter(r => r.name !== EXCLUDED_REPO)
-        .map(r => r.language)
-        .filter(Boolean)
-    )].sort();
+    const languages = [...new Set(repositories.map(r => r.language).filter(Boolean))].sort();
 
     DOM.dropdownList.innerHTML = '';
-    addLanguageOption(MESSAGES.allLanguages, '', true);
-
-    languages.forEach(lang => addLanguageOption(lang, lang, false));
+    addLanguageOption(MESSAGES.allLanguages, '');
+    languages.forEach(language => addLanguageOption(language, language));
   }
 
-  function addLanguageOption(label, language, isAll) {
+  function createLanguageIcon(language) {
+    const img = document.createElement('img');
+    img.src = LANGUAGE_ICONS[language];
+    img.alt = '';
+    img.className = LANGUAGE_ICON_CLASSES;
+    return img;
+  }
+
+  function addLanguageOption(label, language) {
     const li = document.createElement('li');
     li.setAttribute('role', 'option');
     li.className = LANGUAGE_OPTION_CLASSES;
@@ -268,12 +261,9 @@ export async function loadRepositories() {
     li.setAttribute('aria-selected', String(language === selectedLanguage));
     li.tabIndex = 0;
 
-    if (!isAll && LANGUAGE_ICONS[language]) {
-      const img = document.createElement('img');
-      img.src = LANGUAGE_ICONS[language];
-      img.alt = '';
+    if (LANGUAGE_ICONS[language]) {
+      const img = createLanguageIcon(language);
       img.loading = 'lazy';
-      img.className = LANGUAGE_ICON_CLASSES;
       li.appendChild(img);
     }
 
@@ -289,26 +279,12 @@ export async function loadRepositories() {
     });
     updateDropdownButtonLabel();
     closeDropdown();
-    currentPage = 1;
-    updateDisplay();
+    resetToFirstPage();
   }
 
   function updateDropdownButtonLabel() {
-    if (!selectedLanguage) {
-      DOM.dropdownButton.textContent = MESSAGES.allLanguages;
-      return;
-    }
-
-    DOM.dropdownButton.replaceChildren(selectedLanguage);
-
-    const iconUrl = LANGUAGE_ICONS[selectedLanguage];
-    if (iconUrl) {
-      const img = document.createElement('img');
-      img.src = iconUrl;
-      img.alt = '';
-      img.className = LANGUAGE_ICON_CLASSES;
-      DOM.dropdownButton.prepend(img);
-    }
+    DOM.dropdownButton.replaceChildren(selectedLanguage || MESSAGES.allLanguages);
+    if (LANGUAGE_ICONS[selectedLanguage]) DOM.dropdownButton.prepend(createLanguageIcon(selectedLanguage));
   }
 
   function updateSortButtonLabel() {
@@ -320,33 +296,12 @@ export async function loadRepositories() {
   function getFilteredRepositories() {
     const searchTerm = DOM.search.value.toLowerCase();
 
-    return repositories
-      .filter(r => r.name !== EXCLUDED_REPO)
-      .filter(r => {
-        const matchesName = r.name.toLowerCase().includes(searchTerm);
-        const matchesLanguage = !selectedLanguage || r.language === selectedLanguage;
-        return matchesName && matchesLanguage;
-      });
-  }
-
-  function sortRepositories(filteredRepos) {
-    const sorted = [...filteredRepos];
-
-    switch (sortMode) {
-      case 0:
-        return sorted.sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at));
-      case 1:
-        return sorted.sort((a, b) => new Date(a.pushed_at) - new Date(b.pushed_at));
-      case 2:
-        return sorted.sort((a, b) => a.name.localeCompare(b.name));
-      default:
-        return sorted;
-    }
+    return repositories.filter(r =>
+      r.name.toLowerCase().includes(searchTerm) && (!selectedLanguage || r.language === selectedLanguage));
   }
 
   function updateDisplay() {
-    const filtered = getFilteredRepositories();
-    const sorted = sortRepositories(filtered);
+    const sorted = getFilteredRepositories().sort(SORT_COMPARATORS[sortMode]);
     const totalPages = Math.ceil(sorted.length / ITEMS_PER_PAGE);
 
     if (currentPage > totalPages) currentPage = totalPages || 1;
@@ -372,7 +327,7 @@ export async function loadRepositories() {
     if (totalFilteredCount === 0) {
       showStatus(MESSAGES.noMatch);
     } else {
-      clearStatus();
+      DOM.status.replaceChildren();
     }
   }
 
@@ -414,7 +369,7 @@ export async function loadRepositories() {
       perPage: ITEMS_PER_PAGE,
       visibleCount,
       filteredCount: totalFilteredCount,
-      totalCount: repositories.filter(r => r.name !== EXCLUDED_REPO).length,
+      totalCount: repositories.length,
     }, PAGE_LANGUAGE);
   }
 

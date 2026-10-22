@@ -62,25 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
       triggerFadeInAnimation();
       if (moveFocus) focusSectionHeading();
 
+      // loadRepositories trata os próprios erros; o catch abaixo cobre falha ao importar o módulo
       if (section === 'projects') {
-        await loadProjectRepositories();
+        (await import('./repositories.js')).loadRepositories();
       }
 
     } catch (error) {
       console.error(error);
       if (requestId === latestSectionRequest) renderErrorMessage();
-    }
-  };
-
-  /**
-   * Importa e executa o carregamento de repositórios da seção de projetos
-   */
-  const loadProjectRepositories = async () => {
-    try {
-      const { loadRepositories } = await import('./repositories.js');
-      loadRepositories();
-    } catch (error) {
-      console.error('Erro ao carregar os repositórios:', error);
     }
   };
 
