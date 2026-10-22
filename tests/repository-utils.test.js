@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   DEFAULT_LANGUAGE_COLOR,
-  LANGUAGE_COLORS,
+  LANGUAGES,
   formatDate,
   getCountLabel,
   getSafeGitHubUrl,
@@ -56,26 +56,28 @@ test('getSafeGitHubUrl only accepts github.com over https', () => {
 });
 
 test('getCountLabel reports an empty result instead of an inverted range', () => {
-  const label = getCountLabel({ page: 1, perPage: 10, visibleCount: 0, filteredCount: 0, totalCount: 18 });
+  const label = getCountLabel({ page: 1, perPage: 10, visibleCount: 0, filteredCount: 0, totalCount: 18 }, 'pt-BR');
   assert.equal(label, '📂 Nenhum projeto encontrado de 18 no total');
 });
 
 test('getCountLabel shows the range of the current page', () => {
   assert.equal(
-    getCountLabel({ page: 2, perPage: 10, visibleCount: 8, filteredCount: 18, totalCount: 18 }),
+    getCountLabel({ page: 2, perPage: 10, visibleCount: 8, filteredCount: 18, totalCount: 18 }, 'pt-BR'),
     '📂 Exibindo 11–18 projetos de 18 no total',
   );
 });
 
 test('formatDate uses pt-BR and tolerates invalid dates', () => {
-  assert.match(formatDate('2026-10-21T12:00:00Z'), /^\d{2}\/\d{2}\/2026$/);
-  assert.equal(formatDate(''), 'data desconhecida');
+  assert.match(formatDate('2026-10-21T12:00:00Z', 'pt-BR'), /^\d{2}\/\d{2}\/2026$/);
+  assert.equal(formatDate('', 'pt-BR'), 'data desconhecida');
 });
 
 test('language colors meet WCAG AA on the card and on their own badge', () => {
   const card = toRgb(CARD_BACKGROUND);
 
-  for (const [language, hex] of Object.entries({ ...LANGUAGE_COLORS, default: DEFAULT_LANGUAGE_COLOR })) {
+  const colors = Object.entries(LANGUAGES).map(([language, { color }]) => [language, color]);
+
+  for (const [language, hex] of [...colors, ['default', DEFAULT_LANGUAGE_COLOR]]) {
     const color = toRgb(hex);
     const badge = color.map((channel, i) => Math.round(channel * BADGE_ALPHA + card[i] * (1 - BADGE_ALPHA)));
 

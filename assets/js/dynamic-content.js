@@ -1,5 +1,5 @@
 import { getHashForSection, getSectionFromHash } from './section-hash.js';
-import { getMessages } from './messages.js';
+import { MESSAGES } from './messages.js';
 
 // Módulos rodam depois do parse do HTML: o DOM já está pronto, sem esperar o DOMContentLoaded
 const PAGE_LANGUAGE = document.documentElement.lang;
@@ -63,7 +63,7 @@ const loadSectionContent = async (section, { moveFocus = false } = {}) => {
   } catch (error) {
     console.error(error);
     if (requestId === latestSectionRequest) {
-      contentContainer.innerHTML = `<p role="alert">${getMessages(PAGE_LANGUAGE).contentError}</p>`;
+      contentContainer.innerHTML = `<p role="alert">${MESSAGES[PAGE_LANGUAGE].contentError}</p>`;
     }
   }
 };

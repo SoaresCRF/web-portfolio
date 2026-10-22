@@ -1,25 +1,19 @@
 import {
   DEFAULT_LANGUAGE_COLOR,
-  LANGUAGE_COLORS,
+  LANGUAGES,
   formatDate,
   getCountLabel,
 } from './repository-utils.js';
-import { getMessages } from './messages.js';
+import { MESSAGES as ALL_MESSAGES } from './messages.js';
 
 // Gerado e validado a cada build a partir da API do GitHub (scripts/fetch-repositories.js) e servido na raiz
 // do site, também para a versão em inglês (en/)
 const REPOSITORIES_URL = `${import.meta.env.BASE_URL}repositories.json`;
 const PAGE_LANGUAGE = document.documentElement.lang;
-const MESSAGES = getMessages(PAGE_LANGUAGE);
+const MESSAGES = ALL_MESSAGES[PAGE_LANGUAGE];
 const GITHUB_PROFILE_URL = 'https://github.com/SoaresCRF';
+// O ícone de cada linguagem (LANGUAGES[...].icon) fica sempre em {icon}/{icon}-original.svg
 const DEVICON_BASE_URL = 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.17.0/icons';
-// Nome do ícone no Devicon por linguagem: o arquivo é sempre {slug}/{slug}-original.svg
-const LANGUAGE_ICONS = {
-  Java: 'java', Python: 'python', JavaScript: 'javascript', TypeScript: 'typescript',
-  HTML: 'html5', CSS: 'css3', C: 'c', 'C++': 'cplusplus',
-  'C#': 'csharp', PHP: 'php', Swift: 'swift', Kotlin: 'kotlin',
-  Go: 'go', Ruby: 'ruby', Shell: 'bash',
-};
 
 // Uma única requisição por visita: reabrir a seção reaproveita o resultado (ou tenta de novo após falha)
 let repositoriesRequest = null;
@@ -217,8 +211,8 @@ export async function loadRepositories() {
 
   function createLanguageIcon(language) {
     const img = document.createElement('img');
-    const slug = LANGUAGE_ICONS[language];
-    img.src = `${DEVICON_BASE_URL}/${slug}/${slug}-original.svg`;
+    const { icon } = LANGUAGES[language];
+    img.src = `${DEVICON_BASE_URL}/${icon}/${icon}-original.svg`;
     img.alt = '';
     img.className = 'mr-2 size-5';
     return img;
@@ -232,7 +226,7 @@ export async function loadRepositories() {
     li.setAttribute('aria-selected', String(language === selectedLanguage));
     li.tabIndex = 0;
 
-    if (LANGUAGE_ICONS[language]) {
+    if (LANGUAGES[language]) {
       const img = createLanguageIcon(language);
       img.loading = 'lazy';
       li.appendChild(img);
@@ -249,7 +243,7 @@ export async function loadRepositories() {
       option.setAttribute('aria-selected', String(option.dataset.language === language));
     });
     DOM.dropdownButton.replaceChildren(language || MESSAGES.allLanguages);
-    if (LANGUAGE_ICONS[language]) DOM.dropdownButton.prepend(createLanguageIcon(language));
+    if (LANGUAGES[language]) DOM.dropdownButton.prepend(createLanguageIcon(language));
     setDropdownOpen(false);
     resetToFirstPage();
   }
@@ -307,7 +301,7 @@ export async function loadRepositories() {
 
   function fillRepositoryTemplate(clone, repository) {
     const language = repository.language || 'N/A';
-    const color = LANGUAGE_COLORS[language] || DEFAULT_LANGUAGE_COLOR;
+    const color = LANGUAGES[language]?.color || DEFAULT_LANGUAGE_COLOR;
     const pushedDate = formatDate(repository.pushed_at, PAGE_LANGUAGE);
 
     const link = clone.querySelector('.repository-link');

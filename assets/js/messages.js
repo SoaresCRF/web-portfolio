@@ -1,8 +1,6 @@
 // Textos gerados pelo JavaScript, por idioma da página (<html lang>); o HTML de cada idioma fica em
 // index.html + public/*.html (pt-BR) e en/index.html + public/en/*.html (en)
 
-export const DEFAULT_LANGUAGE = 'pt-BR';
-
 export const MESSAGES = {
   'pt-BR': {
     dateLocale: 'pt-BR',
@@ -45,10 +43,3 @@ export const MESSAGES = {
     countRange: (start, end, total) => `📂 Showing projects ${start}–${end} of ${total}`,
   },
 };
-
-/**
- * @param {string} language Valor de <html lang>
- */
-export function getMessages(language) {
-  return MESSAGES[language] ?? MESSAGES[DEFAULT_LANGUAGE];
-}

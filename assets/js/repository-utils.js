@@ -1,15 +1,19 @@
 // Funções puras da seção de projetos, separadas para poderem ser testadas sem DOM (ver tests/)
-import { DEFAULT_LANGUAGE, getMessages } from './messages.js';
+import { MESSAGES } from './messages.js';
 
 const GITHUB_ORIGIN = 'https://github.com';
 
-// Cores das linguagens (base: GitHub linguist), escurecidas quando necessário para atingir
-// contraste WCAG AA (4,5:1) sobre o fundo do card (#f8f9fa) e sobre o fundo do selo da linguagem
-export const LANGUAGE_COLORS = {
-  Java: '#8f5c14', Python: '#326b9b', JavaScript: '#71692a', TypeScript: '#2b68ac',
-  HTML: '#b33c1e', CSS: '#563d7c', C: '#555555', 'C++': '#b4385c',
-  'C#': '#147700', PHP: '#4f5d95', Swift: '#8a5d25', Kotlin: '#7656b2',
-  Go: '#00708c', Ruby: '#701516', Shell: '#467229',
+// Por linguagem: cor (base: GitHub linguist), escurecida quando necessário para atingir contraste WCAG AA
+// (4,5:1) sobre o fundo do card (#f8f9fa) e sobre o fundo do selo da linguagem; e nome do ícone no Devicon
+export const LANGUAGES = {
+  Java: { color: '#8f5c14', icon: 'java' }, Python: { color: '#326b9b', icon: 'python' },
+  JavaScript: { color: '#71692a', icon: 'javascript' }, TypeScript: { color: '#2b68ac', icon: 'typescript' },
+  HTML: { color: '#b33c1e', icon: 'html5' }, CSS: { color: '#563d7c', icon: 'css3' },
+  C: { color: '#555555', icon: 'c' }, 'C++': { color: '#b4385c', icon: 'cplusplus' },
+  'C#': { color: '#147700', icon: 'csharp' }, PHP: { color: '#4f5d95', icon: 'php' },
+  Swift: { color: '#8a5d25', icon: 'swift' }, Kotlin: { color: '#7656b2', icon: 'kotlin' },
+  Go: { color: '#00708c', icon: 'go' }, Ruby: { color: '#701516', icon: 'ruby' },
+  Shell: { color: '#467229', icon: 'bash' },
 };
 export const DEFAULT_LANGUAGE_COLOR = '#616970';
 
@@ -51,11 +55,11 @@ export function normalizeRepositories(data) {
 /**
  * Data no formato do idioma da página, no fuso do visitante, independente do idioma do navegador
  * @param {string} isoDate
- * @param {string} [language] Valor de <html lang>
+ * @param {string} language Valor de <html lang>
  * @returns {string}
  */
-export function formatDate(isoDate, language = DEFAULT_LANGUAGE) {
-  const messages = getMessages(language);
+export function formatDate(isoDate, language) {
+  const messages = MESSAGES[language];
   const date = new Date(isoDate);
   return Number.isNaN(date.getTime()) ? messages.unknownDate : date.toLocaleDateString(messages.dateLocale);
 }
@@ -63,11 +67,11 @@ export function formatDate(isoDate, language = DEFAULT_LANGUAGE) {
 /**
  * Texto do contador de projetos
  * @param {{page: number, perPage: number, visibleCount: number, filteredCount: number, totalCount: number}} counts
- * @param {string} [language] Valor de <html lang>
+ * @param {string} language Valor de <html lang>
  * @returns {string}
  */
-export function getCountLabel({ page, perPage, visibleCount, filteredCount, totalCount }, language = DEFAULT_LANGUAGE) {
-  const messages = getMessages(language);
+export function getCountLabel({ page, perPage, visibleCount, filteredCount, totalCount }, language) {
+  const messages = MESSAGES[language];
   if (filteredCount === 0) {
     return messages.countEmpty(totalCount);
   }
