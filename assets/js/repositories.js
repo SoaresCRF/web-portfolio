@@ -95,7 +95,7 @@ export async function loadRepositories() {
   // O usuário pode ter trocado de seção enquanto a lista carregava
   if (!DOM.list.isConnected) return;
 
-  populateLanguageDropdown(repositories);
+  populateLanguageDropdown();
   setupEventListeners();
   updateDisplay();
 
@@ -207,7 +207,7 @@ export async function loadRepositories() {
     }
   }
 
-  function populateLanguageDropdown(repositories) {
+  function populateLanguageDropdown() {
     const languages = [...new Set(repositories.map(r => r.language).filter(Boolean))].sort();
 
     DOM.dropdownList.innerHTML = '';
