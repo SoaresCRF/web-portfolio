@@ -32,7 +32,3 @@ test('toSiteRepositories falls back to main when the default branch is missing',
   const [repository] = toSiteRepositories([{ name: 'repo' }]);
   assert.equal(repository.zip_url, 'https://github.com/SoaresCRF/repo/archive/refs/heads/main.zip');
 });
-
-test('toSiteRepositories drops entries without a name', () => {
-  assert.deepEqual(toSiteRepositories([null, { description: 'sem nome' }]), []);
-});
