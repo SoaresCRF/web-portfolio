@@ -77,6 +77,5 @@ export function getCountLabel({ page, perPage, visibleCount, filteredCount, tota
   }
 
   const start = (page - 1) * perPage + 1;
-  const end = Math.min(start + visibleCount - 1, filteredCount);
-  return messages.countRange(start, end, totalCount);
+  return messages.countRange(start, start + visibleCount - 1, totalCount);
 }
