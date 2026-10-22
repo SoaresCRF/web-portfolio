@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -39,7 +39,7 @@ jobs:
     # Pull requests only verify the build; publishing happens from main
     if: github.event_name != 'pull_request'
     needs: build
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
     # Only deployments are serialized; PR builds must not queue behind (or replace) a pending deploy
     concurrency:
       group: pages
