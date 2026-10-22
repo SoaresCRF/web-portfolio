@@ -25,6 +25,8 @@
     --color-success-soft: #d1e7dd;
     --color-line: #dee2e6;
     --color-surface: #f8f9fa;
+    /* Tags and neutral badges: one step darker than the surface cards they sit on */
+    --color-tag: #e9ecef;
 
     /* Sizes without a paired line-height: they inherit it, like the original layout */
     --text-lead: 1.25rem;
