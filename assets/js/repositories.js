@@ -37,17 +37,16 @@ let repositoriesRequest = null;
 let documentListeners = null;
 
 function requestRepositories() {
-  repositoriesRequest ??= fetchRepositories().catch(error => {
-    repositoriesRequest = null;
-    throw error;
-  });
+  repositoriesRequest ??= fetch(REPOSITORIES_URL)
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
+    })
+    .catch(error => {
+      repositoriesRequest = null;
+      throw error;
+    });
   return repositoriesRequest;
-}
-
-async function fetchRepositories() {
-  const response = await fetch(REPOSITORIES_URL);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.json();
 }
 
 // Repositório principal para carregar os repositórios do portfólio
@@ -55,8 +54,7 @@ export async function loadRepositories() {
   // =================== CONFIGURAÇÕES ===================
   const EXCLUDED_REPO = 'SoaresCRF';
   const ITEMS_PER_PAGE = 10;
-  const SORT_LABELS = MESSAGES.sortLabels;
-  // Mesma ordem de SORT_LABELS: recentes, antigos, A–Z
+  // Mesma ordem de MESSAGES.sortLabels: recentes, antigos, A–Z
   const SORT_COMPARATORS = [
     (a, b) => new Date(b.pushed_at) - new Date(a.pushed_at),
     (a, b) => new Date(a.pushed_at) - new Date(b.pushed_at),
@@ -64,10 +62,7 @@ export async function loadRepositories() {
   ];
 
   // Classes Tailwind dos elementos criados dinamicamente (literais completos para o scanner do Tailwind)
-  const LANGUAGE_ICON_CLASSES = 'mr-2 size-5';
   const LANGUAGE_OPTION_CLASSES = 'flex cursor-pointer items-center gap-2 px-3 py-1.5 hover:bg-[#f0f0f0] aria-selected:bg-[#f0f0f0]';
-  // Itens após o primeiro se sobrepõem em 1px, como na paginação original
-  const PAGE_ITEM_CLASSES = 'not-first:-ml-px';
   const PAGE_LINK_CLASSES = [
     'min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-white px-4 py-[0.6rem] text-[0.95rem] text-[#333]',
     'shadow-[0_2px_6px_rgb(0_0_0/0.1)] transition-all duration-200 ease-[ease]',
@@ -101,28 +96,24 @@ export async function loadRepositories() {
   let selectedLanguage = '';
 
   // =================== INICIALIZAÇÃO ===================
-  await initialize();
+  updateSortButtonLabel();
+
+  try {
+    repositories = (await requestRepositories()).filter(r => r.name !== EXCLUDED_REPO);
+  } catch (error) {
+    console.error('❌ Erro ao buscar repositórios:', error);
+    if (DOM.list.isConnected) renderLoadError();
+    return;
+  }
+
+  // O usuário pode ter trocado de seção enquanto a lista carregava
+  if (!DOM.list.isConnected) return;
+
+  populateLanguageDropdown(repositories);
+  setupEventListeners();
+  updateDisplay();
 
   // =================== FUNÇÕES AUXILIARES ===================
-
-  async function initialize() {
-    updateSortButtonLabel();
-
-    try {
-      repositories = (await requestRepositories()).filter(r => r.name !== EXCLUDED_REPO);
-    } catch (error) {
-      console.error('❌ Erro ao buscar repositórios:', error);
-      if (DOM.list.isConnected) renderLoadError();
-      return;
-    }
-
-    // O usuário pode ter trocado de seção enquanto a lista carregava
-    if (!DOM.list.isConnected) return;
-
-    populateLanguageDropdown(repositories);
-    setupEventListeners();
-    updateDisplay();
-  }
 
   // A região role="status" fica sempre no DOM (vazia quando não há mensagem) para ser anunciada
   function showStatus(message, link) {
@@ -145,7 +136,7 @@ export async function loadRepositories() {
   function setupEventListeners() {
     DOM.sortButton.addEventListener('click', handleSort);
     DOM.search.addEventListener('input', resetToFirstPage);
-    DOM.dropdownButton.addEventListener('click', toggleDropdown);
+    DOM.dropdownButton.addEventListener('click', () => setDropdownOpen(DOM.dropdownList.hidden));
     DOM.dropdownButton.addEventListener('keydown', handleDropdownButtonKeydown);
     DOM.dropdownList.addEventListener('keydown', handleDropdownListKeydown);
 
@@ -153,13 +144,13 @@ export async function loadRepositories() {
     documentListeners = new AbortController();
     document.addEventListener('click', (event) => {
       if (!DOM.dropdownButton.contains(event.target) && !DOM.dropdownList.contains(event.target)) {
-        closeDropdown();
+        setDropdownOpen(false);
       }
     }, { signal: documentListeners.signal });
   }
 
   function handleSort() {
-    sortMode = (sortMode + 1) % SORT_LABELS.length;
+    sortMode = (sortMode + 1) % SORT_COMPARATORS.length;
     updateSortButtonLabel();
     resetToFirstPage();
   }
@@ -169,10 +160,9 @@ export async function loadRepositories() {
     updateDisplay();
   }
 
-  function toggleDropdown() {
-    const expanded = DOM.dropdownButton.getAttribute('aria-expanded') === 'true';
-    DOM.dropdownButton.setAttribute('aria-expanded', String(!expanded));
-    DOM.dropdownList.hidden = expanded;
+  function setDropdownOpen(open) {
+    DOM.dropdownButton.setAttribute('aria-expanded', String(open));
+    DOM.dropdownList.hidden = !open;
   }
 
   function getLanguageOptions() {
@@ -184,8 +174,7 @@ export async function loadRepositories() {
     if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
 
     event.preventDefault();
-    DOM.dropdownButton.setAttribute('aria-expanded', 'true');
-    DOM.dropdownList.hidden = false;
+    setDropdownOpen(true);
 
     const options = getLanguageOptions();
     (options.find(option => option.getAttribute('aria-selected') === 'true') || options[0])?.focus();
@@ -223,18 +212,13 @@ export async function loadRepositories() {
         break;
       case 'Escape':
         event.preventDefault();
-        closeDropdown();
+        setDropdownOpen(false);
         DOM.dropdownButton.focus();
         break;
       case 'Tab':
-        closeDropdown();
+        setDropdownOpen(false);
         break;
     }
-  }
-
-  function closeDropdown() {
-    DOM.dropdownButton.setAttribute('aria-expanded', 'false');
-    DOM.dropdownList.hidden = true;
   }
 
   function populateLanguageDropdown(repositories) {
@@ -249,7 +233,7 @@ export async function loadRepositories() {
     const img = document.createElement('img');
     img.src = LANGUAGE_ICONS[language];
     img.alt = '';
-    img.className = LANGUAGE_ICON_CLASSES;
+    img.className = 'mr-2 size-5';
     return img;
   }
 
@@ -278,7 +262,7 @@ export async function loadRepositories() {
       option.setAttribute('aria-selected', String(option.dataset.language === language));
     });
     updateDropdownButtonLabel();
-    closeDropdown();
+    setDropdownOpen(false);
     resetToFirstPage();
   }
 
@@ -288,9 +272,10 @@ export async function loadRepositories() {
   }
 
   function updateSortButtonLabel() {
-    DOM.sortButton.textContent = `🗂️ ${SORT_LABELS[sortMode]}`;
+    const label = MESSAGES.sortLabels[sortMode];
+    DOM.sortButton.textContent = `🗂️ ${label}`;
     // O nome acessível inclui o texto visível (WCAG 2.5.3) e explica que o botão alterna a ordem
-    DOM.sortButton.setAttribute('aria-label', `${SORT_LABELS[sortMode]}. ${MESSAGES.sortAction}`);
+    DOM.sortButton.setAttribute('aria-label', `${label}. ${MESSAGES.sortAction}`);
   }
 
   function getFilteredRepositories() {
@@ -322,7 +307,13 @@ export async function loadRepositories() {
       DOM.list.appendChild(clone);
     });
 
-    updateRepositoryCount(repositoriesToRender.length, totalFilteredCount);
+    DOM.count.textContent = getCountLabel({
+      page: currentPage,
+      perPage: ITEMS_PER_PAGE,
+      visibleCount: repositoriesToRender.length,
+      filteredCount: totalFilteredCount,
+      totalCount: repositories.length,
+    }, PAGE_LANGUAGE);
 
     if (totalFilteredCount === 0) {
       showStatus(MESSAGES.noMatch);
@@ -363,23 +354,14 @@ export async function loadRepositories() {
     linkDownload.style.color = color;
   }
 
-  function updateRepositoryCount(visibleCount, totalFilteredCount) {
-    DOM.count.textContent = getCountLabel({
-      page: currentPage,
-      perPage: ITEMS_PER_PAGE,
-      visibleCount,
-      filteredCount: totalFilteredCount,
-      totalCount: repositories.length,
-    }, PAGE_LANGUAGE);
-  }
-
   function renderPagination(totalPages) {
     DOM.pagination.innerHTML = '';
     if (totalPages <= 1) return;
 
     const createPageItem = (label, accessibleName, disabled, onClick, active = false) => {
       const li = document.createElement('li');
-      li.className = PAGE_ITEM_CLASSES;
+      // Itens após o primeiro se sobrepõem em 1px, como na paginação original
+      li.className = 'not-first:-ml-px';
 
       const button = document.createElement('button');
       button.className = PAGE_LINK_CLASSES;
